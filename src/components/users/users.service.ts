@@ -1,26 +1,84 @@
-import { Injectable } from '@nestjs/common';
+import { ForbiddenException, Injectable, NotFoundException, Req, Res, UnauthorizedException } from '@nestjs/common';
 import { CreateUserDto } from './dto/create-user.dto';
 import { UpdateUserDto } from './dto/update-user.dto';
+import { InjectRepository } from '@nestjs/typeorm';
+import { Users } from './entities/user.entity';
+import { Repository } from 'typeorm';
+import { JwtService } from '@nestjs/jwt';
+import { Request, Response, response } from 'express';
 
 @Injectable()
 export class UsersService {
-  create(createUserDto: CreateUserDto) {
-    return 'This action adds a new user';
+  constructor(
+    @InjectRepository(Users)
+    private readonly usersrep : Repository<Users>,
+    private readonly jwtService : JwtService
+  ){}
+
+  async create(createUserDto: CreateUserDto,@Res({passthrough:true}) response:Response) {
+    const { email } = createUserDto;
+
+    const exists = await this.usersrep.findOne({where: {email}})
+    if(exists){
+      throw new ForbiddenException('email already exists, please login')
+    }
+    const user = await this.usersrep.save(createUserDto)
+
+    const payload = {userid:user.userid,email:user.email,name:user.name,role:user.role,location:user.location}
+    const jwt = await this.jwtService.signAsync(payload)
+    response.cookie('jwt',jwt,{
+      httpOnly: true,
+      secure:true,
+      maxAge:360000,
+    })
+    return {
+      message: 'Account succesfully created'
+    };
   }
 
-  findAll() {
-    return `This action returns all users`;
+  async findAll() {
+    return await this.usersrep.find() 
   }
 
-  findOne(id: number) {
-    return `This action returns a #${id} user`;
+  async findOne(userid: number) {
+    return await this.usersrep.findOne({where : {userid}})
   }
 
-  update(id: number, updateUserDto: UpdateUserDto) {
-    return `This action updates a #${id} user`;
+  async update(userid: number, updateUserDto: UpdateUserDto,@Req() req:Request) {
+    const user = req.user?.userid
+    const requester = await this.usersrep.findOne({where : {userid}})
+
+    if (!requester){
+      throw new NotFoundException('user not found')
+    }
+
+    if(user != requester.userid){
+      throw new ForbiddenException('your not authorized to make this update')
+    }
+    Object.assign(requester,updateUserDto)
+
+    await this.usersrep.save(requester)
+    
+    return{
+      message : 'successfully updated'
+    }
   }
 
-  remove(id: number) {
-    return `This action removes a #${id} user`;
+  async remove(userid: number, @Req() req:Request) {
+    const user = req.user?.userid
+    const requester = await this.usersrep.findOne({where : {userid}})
+    
+    if (!requester){
+      throw new NotFoundException('user not found')
+    }
+
+    if (user !== requester.userid){
+      throw new UnauthorizedException('You are not authorized to delete this account')
+    }
+
+    await this.usersrep.delete(requester)
+    return{
+      message : 'successfully deleted user'
+    }
   }
 }
