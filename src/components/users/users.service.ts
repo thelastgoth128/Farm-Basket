@@ -40,6 +40,10 @@ export class UsersService {
     return await this.usersrep.find() 
   }
 
+  async findMail(email : string):Promise<Users | undefined>{
+    return await this.usersrep.findOne({where : {email}})
+  }
+
   async findOne(userid: number) {
     return await this.usersrep.findOne({where : {userid}})
   }
@@ -58,7 +62,7 @@ export class UsersService {
     Object.assign(requester,updateUserDto)
 
     await this.usersrep.save(requester)
-    
+
     return{
       message : 'successfully updated'
     }
