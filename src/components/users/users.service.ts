@@ -12,7 +12,7 @@ export class UsersService {
   constructor(
     @InjectRepository(Users)
     private readonly usersrep : Repository<Users>,
-    private readonly jwtService : JwtService
+    private  jwtService : JwtService
   ){}
 
   async create(createUserDto: CreateUserDto,@Res({passthrough:true}) response:Response) {
