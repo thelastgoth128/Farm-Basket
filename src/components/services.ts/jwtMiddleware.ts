@@ -14,5 +14,6 @@ export class JwtMiddleware implements NestMiddleware{
                 console.error('JWT verification failed:', error)
             }
         }
+        next()
     }
 }
