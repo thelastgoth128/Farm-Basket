@@ -5,7 +5,8 @@ import { InjectRepository } from '@nestjs/typeorm';
 import { Users } from './entities/user.entity';
 import { Repository } from 'typeorm';
 import { JwtService } from '@nestjs/jwt';
-import { Request, Response, response } from 'express';
+import { Request, Response } from 'express';
+import { Role } from '../enums/role.enums';
 
 @Injectable()
 export class UsersService {
@@ -22,10 +23,19 @@ export class UsersService {
     if(exists){
       throw new ForbiddenException('email already exists, please login')
     }
+    createUserDto.role=createUserDto.role || Role.BUYER
     const user = await this.usersrep.save(createUserDto)
 
-    const payload = {userid:user.userid,email:user.email,name:user.name,role:user.role,location:user.location}
-    const jwt = await this.jwtService.signAsync(payload)
+    const payload = {
+      userid:user.userid,
+      email:user.email,
+      name:user.name,
+      role:user.role,
+      location:user.location
+    }
+    const jwt = await this.jwtService.signAsync(payload, {
+      secret:'hello'
+    })
     response.cookie('jwt',jwt,{
       httpOnly: true,
       secure:true,
@@ -48,17 +58,14 @@ export class UsersService {
     return await this.usersrep.findOne({where : {userid}})
   }
 
-  async update(userid: number, updateUserDto: UpdateUserDto,@Req() req:Request) {
-    const user = req.user?.userid
+  async update(updateUserDto: UpdateUserDto,@Req() req:Request) {
+    const userid = req.user?.userid
     const requester = await this.usersrep.findOne({where : {userid}})
 
     if (!requester){
       throw new NotFoundException('user not found')
     }
 
-    if(user != requester.userid){
-      throw new ForbiddenException('your not authorized to make this update')
-    }
     Object.assign(requester,updateUserDto)
 
     await this.usersrep.save(requester)
@@ -68,19 +75,15 @@ export class UsersService {
     }
   }
 
-  async remove(userid: number, @Req() req:Request) {
-    const user = req.user?.userid
+  async remove(@Req() req:Request) {
+    const userid = req.user?.userid
     const requester = await this.usersrep.findOne({where : {userid}})
     
     if (!requester){
       throw new NotFoundException('user not found')
     }
 
-    if (user !== requester.userid){
-      throw new UnauthorizedException('You are not authorized to delete this account')
-    }
-
-    await this.usersrep.delete(requester)
+    await this.usersrep.delete(userid)
     return{
       message : 'successfully deleted user'
     }
