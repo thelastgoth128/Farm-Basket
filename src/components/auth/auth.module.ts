@@ -5,6 +5,7 @@ import { AuthController } from "./auth.controller";
 import { AuthService } from "./auth.service";
 import { APP_GUARD } from "@nestjs/core";
 import { AuthGuard } from "./guards/authGuard";
+import { MailService } from "../services.ts/mail.service";
 
 
 @Module({
@@ -20,6 +21,6 @@ import { AuthGuard } from "./guards/authGuard";
     providers: [AuthService,{
         provide:APP_GUARD,
         useClass:AuthGuard
-    }]
+    },MailService]
 })
 export class AuthModule {}
