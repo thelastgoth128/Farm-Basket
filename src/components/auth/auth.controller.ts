@@ -20,5 +20,10 @@ export class AuthController {
     forgotpassword(@Body() forgotpasswordDto : ForgotPasswordDto){
         return this.authService.forgotPassword(forgotpasswordDto.email)
     }
+
+    @Post('logout')
+    logout(@Res({passthrough:true}) response:Response){
+        return this.authService.logout(response)
+    }
   
 }

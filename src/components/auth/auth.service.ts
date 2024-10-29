@@ -44,11 +44,14 @@ export class AuthService{
         }
     }
 
-    async logout(req: Request, res:Response){
+    async logout( res:Response){
         res.clearCookie('jwt',{
             httpOnly:true,
             secure:true,
             
+        })
+        return({
+            message : "you have logged out"
         })
     }
 }
