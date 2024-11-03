@@ -75,6 +75,19 @@ export class UsersService {
     }
   }
 
+  async makeAdmin(userid,updateUserDto : UpdateUserDto){
+    const admin = await this.usersrep.findOne({where : {userid}})
+    if (!admin){
+      throw new NotFoundException('user not found')
+    }
+    Object.assign(admin,updateUserDto)
+    await this.usersrep.save(admin)
+    return {
+      message : 'Successfully added an Admin'
+    }
+
+  }
+
   async remove(@Req() req:Request) {
     const userid = req.user?.userid
     const requester = await this.usersrep.findOne({where : {userid}})
