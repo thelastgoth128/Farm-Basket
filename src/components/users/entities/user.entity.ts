@@ -25,4 +25,10 @@ export class Users {
 
     @Column()
     location : string
+
+    @Column()
+    resetToken: string
+
+    @Column()
+    resetTokenExpiry: Date
 }
