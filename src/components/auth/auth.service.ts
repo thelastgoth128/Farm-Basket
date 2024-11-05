@@ -48,6 +48,24 @@ export class AuthService{
         }
     }
 
+    async verifyResetToken(email :string, token: string){
+        const user = await this.userService.findMail(email);
+        if(!user || !user.resetToken || !user.resetTokenExpiry){
+            throw new Error('Invalid or expired token')
+        }
+
+        const now = new Date()
+        if (now > new Date(user.resetTokenExpiry)){
+            throw new Error('Token has expired')
+        }
+
+        if (user.resetToken !== token){
+            throw new Error('Invalid token')
+        }
+
+        
+    }
+
     async logout( res:Response){
         res.clearCookie('jwt',{
             httpOnly:true,
