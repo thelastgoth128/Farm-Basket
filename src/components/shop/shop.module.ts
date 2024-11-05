@@ -5,6 +5,7 @@ import { TypeOrmModule } from '@nestjs/typeorm';
 import { typeOrmConfig } from 'typeOrmConfig';
 import { Shop } from './entities/shop.entity';
 import { UsersModule } from '../users/users.module';
+import { MailService } from '../services.ts/mail.service';
 
 @Module({
   imports : [
@@ -12,7 +13,7 @@ import { UsersModule } from '../users/users.module';
     TypeOrmModule.forFeature([Shop]),UsersModule
   ],
   controllers: [ShopController],
-  providers: [ShopService],
+  providers: [ShopService,MailService],
   exports : [TypeOrmModule]
 })
 export class ShopModule {}

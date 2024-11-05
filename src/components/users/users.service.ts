@@ -7,17 +7,19 @@ import { Repository } from 'typeorm';
 import { JwtService } from '@nestjs/jwt';
 import { Request, Response } from 'express';
 import { Role } from '../enums/role.enums';
+import { MailService } from '../services.ts/mail.service';
 
 @Injectable()
 export class UsersService {
   constructor(
     @InjectRepository(Users)
     private readonly usersrep : Repository<Users>,
-    private  jwtService : JwtService
+    private  jwtService : JwtService,
+    private mailService : MailService
   ){}
 
   async create(createUserDto: CreateUserDto,@Res({passthrough:true}) response:Response) {
-    const { email } = createUserDto;
+    const { email,name } = createUserDto;
 
     const exists = await this.usersrep.findOne({where: {email}})
     if(exists){
@@ -41,6 +43,7 @@ export class UsersService {
       secure:true,
       maxAge:360000,
     })
+    await this.mailService.sendCreateAccountEmail(email,name)
     return {
       message: 'Account succesfully created'
     };
@@ -86,6 +89,16 @@ export class UsersService {
       message : 'Successfully added an Admin'
     }
 
+  }
+
+  async saveResetToken(email: string, resetToken: string, expirationTime: Date){
+    await this.usersrep.update(
+      { email },
+      {
+        resetToken,
+        resetTokenExpiry: expirationTime
+      }
+    )
   }
 
   async remove(@Req() req:Request) {
