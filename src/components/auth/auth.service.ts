@@ -5,6 +5,7 @@ import { Response } from "express";
 import * as bcrypt from 'bcrypt'
 import { nanoid } from "nanoid";
 import { MailService } from "../services.ts/mail.service";
+import { addMinutes } from 'date-fns'
 
 
 @Injectable()
@@ -37,6 +38,9 @@ export class AuthService{
 
         if (user){
             const resetToken = nanoid(64)
+            const expirationTime = addMinutes(new Date(), 60)
+
+            await this.userService.saveResetToken(email,resetToken,expirationTime)
             await this.mailService.sendPasswordResetEmail(email, resetToken)
         }
         return{

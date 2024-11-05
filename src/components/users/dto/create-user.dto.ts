@@ -1,4 +1,4 @@
-import { IsEmail, IsInt, IsString, IsStrongPassword } from "class-validator";
+import { IsEmail, IsInt, IsOptional, IsString, IsStrongPassword } from "class-validator";
 import { Role } from "src/components/enums/role.enums";
 
 
@@ -18,4 +18,13 @@ export class CreateUserDto {
 
    @IsString()
    location : string
+
+   @IsString()
+   @IsOptional()
+   resetToken : string
+
+   @IsString()
+   @IsOptional()
+   resetTokenExpiry: Date
+   
 }
