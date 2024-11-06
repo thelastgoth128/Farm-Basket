@@ -16,5 +16,4 @@ export class Shop {
 
     @Column()
     name : string
-
 }                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                  

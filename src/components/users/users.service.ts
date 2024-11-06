@@ -15,7 +15,7 @@ export class UsersService {
     @InjectRepository(Users)
     private readonly usersrep : Repository<Users>,
     private  jwtService : JwtService,
-    private mailService : MailService
+    private mailService : MailService,
   ){}
 
   async create(createUserDto: CreateUserDto,@Res({passthrough:true}) response:Response) {
@@ -91,15 +91,16 @@ export class UsersService {
 
   }
 
-  async saveResetToken(email: string, resetToken: string, expirationTime: Date){
+  async saveResetToken(email: string, reset_token: string, expirationTime: Date){
     await this.usersrep.update(
       { email },
       {
-        resetToken,
-        resetTokenExpiry: expirationTime
+        reset_token,
+        reset_token_expiry: expirationTime
       }
     )
   }
+
 
   async remove(@Req() req:Request) {
     const userid = req.user?.userid
