@@ -24,6 +24,7 @@ export class ShopService {
   ){}
 
   async create(createShopDto: CreateShopDto,@Req() req:Request,@Res() res:Response) {
+    try{
     const { owner, ...shopData } = createShopDto
     const user = req.user?.userid;
     const ShopOwner = await this.usersrep.findOne({where : { userid : user}})
@@ -36,21 +37,27 @@ export class ShopService {
       ...shopData,
       owner : ShopOwner
     });
+
+    await this.shoprep.save(shop)
     await this.usersService.update({
       ...UpdateUserDto,
       role : Role.SELLER
      },
       req
      )
-
-     res.setHeader('Role',Role.SELLER)
-    await this.shoprep.save(shop)
     await this.mailService.sendShopCreatedEmail(ShopOwner.email,ShopOwner.name,createShopDto.name)
-    return{
-      message : 'you have successfully created a shop'
-    }
-        
+    
+    res.setHeader('Role',Role.SELLER)
+    res.status(201).json({
+      message:'You have successfully created a shop',
+    });
+  }catch(error){
+    res.status(500).json({
+      message:'Internal server error',
+      error: error.message
+    })
   }
+}
 
   async findAll() {
     return await this.shoprep.find()
@@ -79,7 +86,13 @@ export class ShopService {
     }
   }
 
-  async remove(shopid: number,@Req() req: Request,@Req() res:Response) {
+  async remove(shopid: number,@Req() req: Request,@Res() res:Response) {
+    try{
+    const shop = await this.shoprep.findOne({where :{shopid}})
+
+    if (!shop){
+      throw new NotFoundException('Shop Not Found')
+    }
     await this.shoprep.delete(shopid)
     await this.usersService.update({
      ...UpdateUserDto,
@@ -88,8 +101,14 @@ export class ShopService {
      req
     )
     res.setHeader('Role',Role.BUYER)
-    return {
-      message : 'Successfully deleted shop'
-    }
+    res.status(200).json({
+      message:'Successfully deleted shop'
+    });
+  }catch(error){
+    res.status(500).json({
+      message:'Internal server error',
+      error : error.message
+    })
   }
+}
 }

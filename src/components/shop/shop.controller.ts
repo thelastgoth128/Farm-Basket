@@ -18,7 +18,7 @@ export class ShopController {
 
   @Roles(Role.SELLER)
   @UseGuards(RolesGuard)
-  @Get()
+  @Get('all')
   findAll() {
     return this.shopService.findAll();
   }
