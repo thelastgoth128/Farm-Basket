@@ -36,7 +36,7 @@ export class UsersService {
       location:user.location
     }
     const jwt = await this.jwtService.signAsync(payload, {
-      secret:'hello'
+      secret:process.env.JWT_SECRET
     })
     response.cookie('jwt',jwt,{
       httpOnly: true,

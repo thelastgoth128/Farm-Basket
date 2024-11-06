@@ -14,7 +14,7 @@ import { UsersService } from "../users/users.service";
         UsersModule,
         JwtModule.register({
             global:true,
-            secret:'hello',
+            secret:process.env.JWT_SECRET,
             signOptions:{ expiresIn: '1d'}
         })
     ],

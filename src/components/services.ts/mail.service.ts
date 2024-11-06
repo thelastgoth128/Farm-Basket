@@ -10,11 +10,8 @@ export class MailService{
         this.transporter = nodemailer.createTransport({
             service:'Gmail',
             auth: {
-                user: 'thindwacyrus86@gmail.com',
-                clientId:'997476500619-6orfa7qngh759tbkrp6ek46srbu9pa2o.apps.googleusercontent.com',
-                clientSecret: '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',
-                //refreshToken: '',
-                //accessToken: ''
+                user: process.env.APP_EMAIL,
+                pass:process.env.APP_PASSWORD
             }
         });
     }
@@ -25,7 +22,14 @@ export class MailService{
             from: 'Auth-backend service',
             to: to,
             subject: 'Password Reset Request',
-            html:`<p>you requested a password reset. Click the link below to reset your password:</p><p><a href="${resetLink}">Reset password</a></p>`
+            html:`
+            <div> style="font-family: Arial, sans-serif; line-height: 1.6; color: #333;">
+                <h2>Password Reset Request</h2>
+                <p>Click the link below to reset your password:</p>
+                <a href="${resetLink}">Reset Password</a>
+                <p>If you did not request this, please ignore this email.</p>
+            </div>  
+            `,
         }
         await this.transporter.sendMail(mailOptions)
     }
