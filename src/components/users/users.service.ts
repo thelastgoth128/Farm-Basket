@@ -7,17 +7,19 @@ import { Repository } from 'typeorm';
 import { JwtService } from '@nestjs/jwt';
 import { Request, Response } from 'express';
 import { Role } from '../enums/role.enums';
+import { MailService } from '../services.ts/mail.service';
 
 @Injectable()
 export class UsersService {
   constructor(
     @InjectRepository(Users)
     private readonly usersrep : Repository<Users>,
-    private  jwtService : JwtService
+    private  jwtService : JwtService,
+    private mailService : MailService,
   ){}
 
   async create(createUserDto: CreateUserDto,@Res({passthrough:true}) response:Response) {
-    const { email } = createUserDto;
+    const { email,name } = createUserDto;
 
     const exists = await this.usersrep.findOne({where: {email}})
     if(exists){
@@ -34,13 +36,14 @@ export class UsersService {
       location:user.location
     }
     const jwt = await this.jwtService.signAsync(payload, {
-      secret:'hello'
+      secret:process.env.JWT_SECRET
     })
     response.cookie('jwt',jwt,{
       httpOnly: true,
       secure:true,
       maxAge:360000,
     })
+    await this.mailService.sendCreateAccountEmail(email,name)
     return {
       message: 'Account succesfully created'
     };
@@ -74,6 +77,30 @@ export class UsersService {
       message : 'successfully updated'
     }
   }
+
+  async makeAdmin(userid,updateUserDto : UpdateUserDto){
+    const admin = await this.usersrep.findOne({where : {userid}})
+    if (!admin){
+      throw new NotFoundException('user not found')
+    }
+    Object.assign(admin,updateUserDto)
+    await this.usersrep.save(admin)
+    return {
+      message : 'Successfully added an Admin'
+    }
+
+  }
+
+  async saveResetToken(email: string, reset_token: string, expirationTime: Date){
+    await this.usersrep.update(
+      { email },
+      {
+        reset_token,
+        reset_token_expiry: expirationTime
+      }
+    )
+  }
+
 
   async remove(@Req() req:Request) {
     const userid = req.user?.userid
