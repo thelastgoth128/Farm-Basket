@@ -26,9 +26,9 @@ export class Users {
     @Column()
     location : string
 
-    @Column()
-    resetToken: string
+    @Column({nullable :true})
+    reset_token: string
 
-    @Column()
-    resetTokenExpiry: Date
+    @Column({nullable : true, type: 'timestamp'})
+    reset_token_expiry: Date
 }

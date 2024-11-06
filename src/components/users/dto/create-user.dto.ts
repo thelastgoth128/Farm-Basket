@@ -20,11 +20,9 @@ export class CreateUserDto {
    location : string
 
    @IsString()
-   @IsOptional()
-   resetToken : string
+   reset_token : string
 
    @IsString()
-   @IsOptional()
-   resetTokenExpiry: Date
+   reset_token_expiry: Date
    
 }
