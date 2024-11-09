@@ -23,14 +23,9 @@ import { Shop } from './components/shop/entities/shop.entity';
       imports:[ConfigModule],
       useFactory:async (configService : ConfigService)=>({
         type:'postgres',
-        host:configService.get<string>('SUPABASE_HOST'),
-        username:configService.get<string>('SUPABASE_USER'),
-        password:configService.get<string>('SUPABASE_PASS'),
-        port:configService.get<number>('SUPABASE_PORT'),
-        database:configService.get<string>('SUPABASE_NAME'),
-        autoLoadEntities:true,
+        url:configService.get<string>('DATABASE_URL'),
         entities:[Users,Product,Shop],
-        synchronize: false
+        synchronize: false,
       }),
       inject:[ConfigService]
     })
