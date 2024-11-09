@@ -6,7 +6,9 @@ import { Request, Response } from 'express';
 import { RolesGuard } from '../auth/guards/roles.guard';
 import { Roles } from '../decorators/roles.decorators';
 import { Role } from '../enums/role.enums';
+import { Public } from '../auth/guards/public';
 
+@Public()
 @Controller('shop')
 export class ShopController {
   constructor(private readonly shopService: ShopService) {}
@@ -16,8 +18,7 @@ export class ShopController {
     return this.shopService.create(createShopDto,request,response);
   }
 
-  @Roles(Role.SELLER)
-  @UseGuards(RolesGuard)
+  
   @Get('all')
   findAll() {
     return this.shopService.findAll();
@@ -32,8 +33,7 @@ export class ShopController {
   update(@Param('id') id: string, @Body() updateShopDto: UpdateShopDto) {
     return this.shopService.update(+id, updateShopDto);
   }
-  @Roles(Role.SELLER)
-  @UseGuards(RolesGuard)
+  
   @Delete(':id')
   remove(@Param('id') shopid: number,@Req() request: Request,@Res() response:Response) {
     return this.shopService.remove(shopid,request,response);

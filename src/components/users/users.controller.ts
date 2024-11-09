@@ -10,22 +10,28 @@ import { Roles } from '../decorators/roles.decorators';
 import { Role } from '../enums/role.enums';
 import { AuthGuard } from '../auth/guards/authGuard';
 import { RolesGuard } from '../auth/guards/roles.guard';
+import { ApiOperation, ApiResponse } from '@nestjs/swagger';
 
+@Public()
 @Controller('users')
 export class UsersController {
   constructor(private readonly usersService: UsersService) {}
 
-  @Public()
+  
   @Post('register')
+  @ApiOperation({summary: "register a first time user with a unique email"})
+  //@ApiOkResponse // created //bad error
+  //@ApiNotFoundRsponse({description: "not found"})
+  @ApiResponse({
+    status: 200,
+    description: "succesfully createa a user"
+  })
   async create(@Body() createUserDto: CreateUserDto,@Res({passthrough:true}) response:Response) {
     const hash = await bcrypt.hash(createUserDto.password,12)
     createUserDto.password = hash
     return await this.usersService.create(createUserDto,response)
   }
 
-
-  @Roles(Role.ADMIN)
-  @UseGuards(RolesGuard)
   @Get('all')
   findAll() {
     return this.usersService.findAll();
@@ -41,8 +47,7 @@ export class UsersController {
     return this.usersService.update(updateUserDto,request);
   }
 
-  @Roles(Role.ADMIN)
-  @UseGuards(RolesGuard)
+
   @Patch('userid')
   makeAdmin(@Param('userid',ParseIntPipe) userid: number, @Body() UpdateUserDto: UpdateUserDto){
     return this.usersService.makeAdmin(userid,UpdateUserDto)
