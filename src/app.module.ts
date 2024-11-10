@@ -16,6 +16,7 @@ import { MulterModule } from '@nestjs/platform-express';
 import { CloudinaryService } from './components/services.ts/cloudinary.service';
 import { ImageModule } from './components/image/image.module';
 import { ImageController } from './components/image/image.controller';
+import { MessagingModule } from './components/messaging/messaging.module';
 
 @Module({
   imports: [UsersModule,JwtModule,AuthModule, ProductsModule, ShopModule,ImageModule,
@@ -36,6 +37,7 @@ import { ImageController } from './components/image/image.controller';
     MulterModule.register({
       dest:'./uploads'
     }),
+    MessagingModule,
     
   ],
   controllers: [AppController,ImageController],//imagecontroller
