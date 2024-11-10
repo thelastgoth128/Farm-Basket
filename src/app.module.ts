@@ -12,6 +12,10 @@ import { TypeOrmModule } from '@nestjs/typeorm';
 import { Users } from './components/users/entities/user.entity';
 import { Product } from './components/products/entities/product.entity';
 import { Shop } from './components/shop/entities/shop.entity';
+import { MulterModule } from '@nestjs/platform-express';
+import { ImageController } from './components/products/image.controller';
+import { CloudinaryService } from './components/services.ts/cloudinary.service';
+import { ImageModule } from './components/image/image.module';
 
 @Module({
   imports: [UsersModule,JwtModule,AuthModule, ProductsModule, ShopModule,
@@ -28,10 +32,14 @@ import { Shop } from './components/shop/entities/shop.entity';
         synchronize: false,
       }),
       inject:[ConfigService]
-    })
+    }),
+    MulterModule.register({
+      dest:'./uploads'
+    }),
+    ImageModule
   ],
-  controllers: [AppController],
-  providers: [AppService],
+  controllers: [AppController,ImageController],//imagecontroller
+  providers: [AppService,CloudinaryService],//cloudinaryservice
 })
 export class AppModule implements NestModule {
   configure(consumer: MiddlewareConsumer) {
