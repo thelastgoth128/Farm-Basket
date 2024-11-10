@@ -13,12 +13,12 @@ import { Users } from './components/users/entities/user.entity';
 import { Product } from './components/products/entities/product.entity';
 import { Shop } from './components/shop/entities/shop.entity';
 import { MulterModule } from '@nestjs/platform-express';
-import { ImageController } from './components/products/image.controller';
 import { CloudinaryService } from './components/services.ts/cloudinary.service';
 import { ImageModule } from './components/image/image.module';
+import { ImageController } from './components/image/image.controller';
 
 @Module({
-  imports: [UsersModule,JwtModule,AuthModule, ProductsModule, ShopModule,
+  imports: [UsersModule,JwtModule,AuthModule, ProductsModule, ShopModule,ImageModule,
     ConfigModule.forRoot({
       isGlobal:true,
       envFilePath: ".env"
@@ -36,7 +36,7 @@ import { ImageModule } from './components/image/image.module';
     MulterModule.register({
       dest:'./uploads'
     }),
-    ImageModule
+    
   ],
   controllers: [AppController,ImageController],//imagecontroller
   providers: [AppService,CloudinaryService],//cloudinaryservice
