@@ -38,8 +38,8 @@ import { ImageController } from './components/image/image.controller';
     }),
     
   ],
-  controllers: [AppController,ImageController],//imagecontroller
-  providers: [AppService,CloudinaryService],//cloudinaryservice
+  controllers: [AppController,ImageController],
+  providers: [AppService,CloudinaryService],
 })
 export class AppModule implements NestModule {
   configure(consumer: MiddlewareConsumer) {
