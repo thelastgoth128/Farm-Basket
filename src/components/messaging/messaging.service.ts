@@ -4,8 +4,38 @@ import { UpdateMessagingDto } from './dto/update-messaging.dto';
 
 @Injectable()
 export class MessagingService {
-  create(createMessagingDto: CreateMessagingDto) {
-    return 'This action adds a new messaging';
+  constructor(
+    @InjectRepository(Messages)
+    private readonly messarep : Repository<Messages>,
+    @InjectRepository(Users)
+    private readonly userRep: Repository<Users>,
+    @InjectRepository(Inbox)
+    private readonly inboxRep: Repository<Inbox>,
+    @InjectRepository(InboxParticipants)
+    private readonly inboxPartRep: Repository<InboxParticipants>,
+  ) {}
+
+    async create(createMessageDto: CreateMessagingDto) {
+      const { inboxid, userid, messages } = createMessageDto;
+  
+      const user = await this.userRep.findOne({where : {userid}});
+      const inbox = await this.inboxRep.findOne({where : {inboxid}});
+  
+      if (!user) {
+        throw new Error('User not found');
+      }
+  
+      if (!inbox) {
+        throw new Error('Inbox not found');
+      }
+  
+      const message = new Messages();
+      message.userid = user
+      message.inboxid = inbox;
+      message.messages = messages;
+      message.created_at = new Date();
+  
+      return await this.messarep.save(message);
   }
 
   findAll() {
