@@ -4,7 +4,6 @@ import { Column, Entity, JoinColumn, ManyToOne, OneToMany, PrimaryGeneratedColum
 
 @Entity()
 export class Products {
-
     @PrimaryGeneratedColumn()
     productid : number
 
