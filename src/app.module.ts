@@ -17,6 +17,9 @@ import { CloudinaryService } from './components/services.ts/cloudinary.service';
 import { ImageModule } from './components/image/image.module';
 import { ImageController } from './components/image/image.controller';
 import { MessagingModule } from './components/messaging/messaging.module';
+import { Inbox } from './components/messaging/entities/inbox.entity';
+import { Messages } from './components/messaging/entities/messaging.entity';
+import { InboxParticipants } from './components/messaging/entities/inbox_participants.entity';
 
 @Module({
   imports: [UsersModule,JwtModule,AuthModule, ProductsModule, ShopModule,ImageModule,MessagingModule,
@@ -29,7 +32,7 @@ import { MessagingModule } from './components/messaging/messaging.module';
       useFactory:async (configService : ConfigService)=>({
         type:'postgres',
         url:configService.get<string>('DATABASE_URL'),
-        entities:[Users,Product,Shop],
+        entities:[Users,Product,Shop,Inbox,Messages,InboxParticipants],
         synchronize: false,
       }),
       inject:[ConfigService]
@@ -37,7 +40,7 @@ import { MessagingModule } from './components/messaging/messaging.module';
     MulterModule.register({
       dest:'./uploads'
     }),
-    MessagingModule,
+
     
   ],
   controllers: [AppController,ImageController],//imagecontroller
