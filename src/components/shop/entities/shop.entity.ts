@@ -1,5 +1,6 @@
+import { Product } from "src/components/products/entities/product.entity";
 import { Users } from "src/components/users/entities/user.entity";
-import { Column, Entity, JoinColumn, OneToOne, PrimaryGeneratedColumn } from "typeorm";
+import { Column, Entity, JoinColumn, ManyToOne, OneToOne, PrimaryGeneratedColumn } from "typeorm";
 
 
 @Entity()
@@ -22,4 +23,8 @@ export class Shop {
 
     @Column()
     image : string
+
+    @ManyToOne(()=>Product,product=>product.shopid)
+    @JoinColumn({name : 'product'})
+    product : Product
 }                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                  
