@@ -44,9 +44,9 @@ export class UsersService {
       maxAge:360000,
     })
     await this.mailService.sendCreateAccountEmail(email,name)
-    return {
-      message: 'Account succesfully created'
-    };
+    response.status(201).json({
+      message:'Successfully Created Account'
+    })
   }
 
   async findAll() {
