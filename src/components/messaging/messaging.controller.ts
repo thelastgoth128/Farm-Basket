@@ -7,9 +7,14 @@ import { UpdateMessagingDto } from './dto/update-messaging.dto';
 export class MessagingController {
   constructor(private readonly messagingService: MessagingService) {}
 
-  @Post()
-  create(@Body() createMessagingDto: CreateMessagingDto) {
-    return this.messagingService.create(createMessagingDto);
+  @Post('send')
+  async create(@Body() createMessageDto: CreateMessagingDto) {
+    return await this.messagingService.create(createMessageDto)
+  }
+
+  @Post('inbox')
+  async createInbox(@Body() createInboxDto: CreateInboxDto): Promise<Inbox> {
+    return await this.messagingService.createInbox(createInboxDto);
   }
 
   @Get()
