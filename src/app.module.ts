@@ -16,9 +16,13 @@ import { MulterModule } from '@nestjs/platform-express';
 import { CloudinaryService } from './components/services.ts/cloudinary.service';
 import { ImageModule } from './components/image/image.module';
 import { ImageController } from './components/image/image.controller';
+import { MessagingModule } from './components/messaging/messaging.module';
+import { Inbox } from './components/messaging/entities/inbox.entity';
+import { Messages } from './components/messaging/entities/messaging.entity';
+import { InboxParticipants } from './components/messaging/entities/inbox_participants.entity';
 
 @Module({
-  imports: [UsersModule,JwtModule,AuthModule, ProductsModule, ShopModule,ImageModule,
+  imports: [UsersModule,JwtModule,AuthModule, ProductsModule, ShopModule,ImageModule,MessagingModule,
     ConfigModule.forRoot({
       isGlobal:true,
       envFilePath: ".env"
@@ -28,7 +32,7 @@ import { ImageController } from './components/image/image.controller';
       useFactory:async (configService : ConfigService)=>({
         type:'postgres',
         url:configService.get<string>('DATABASE_URL'),
-        entities:[Users,Products,Shop],
+        entities:[Users,Products,Shop,Inbox,Messages,InboxParticipants],
         synchronize: false,
       }),
       inject:[ConfigService]
@@ -36,6 +40,7 @@ import { ImageController } from './components/image/image.controller';
     MulterModule.register({
       dest:'./uploads'
     }),
+
     
   ],
   controllers: [AppController,ImageController],//imagecontroller

@@ -20,12 +20,25 @@ export class ImageController{
     async uploadFile(@UploadedFile() file: Express.Multer.File,@Body('shopid') shopid:number) {
       try{
         const result = await this.cloudinaryService.uploadImage(file.path)
-        await this.imageService.saveImageUrl(shopid,result.url)
+        await this.imageService.saveShopImageUrl(shopid,result.url)
         return result
       }catch(error) {
         console.error('Error uploading image: ', error);
         throw new Error('Failed to upload image')
       } 
+    }
+
+    @Post('product/image')
+    @UseInterceptors(FileInterceptor('image'))
+    async uploadImage(@UploadedFile() file: Express.Multer.File,@Body('productid') productid : number) {
+      try{
+        const result = await this.cloudinaryService.uploadImage(file.path)
+        await this.imageService.saveProductImageUrl(productid,result.url)
+        return result
+      }catch(error) {
+        console.error('Error uploading image: ', error);
+        throw new Error('Failed to upload image')
+      }
     }
 }
 

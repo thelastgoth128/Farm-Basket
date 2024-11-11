@@ -1,5 +1,7 @@
 import { Role } from "src/components/enums/role.enums";
-import { Column, Entity, PrimaryGeneratedColumn } from "typeorm";
+import { InboxParticipants } from "src/components/messaging/entities/inbox_participants.entity";
+import { Messages } from "src/components/messaging/entities/messaging.entity";
+import { Column, Entity, OneToMany, PrimaryGeneratedColumn } from "typeorm";
 
 
 @Entity()
@@ -31,4 +33,10 @@ export class Users {
 
     @Column({nullable : true, type: 'timestamp'})
     reset_token_expiry: Date
+
+    @OneToMany(()=>InboxParticipants,participant=>participant.userid)
+    inboxparticipants : InboxParticipants[]
+
+    @OneToMany(()=>Messages,message=>message.userid)
+    message : Messages[]
 }

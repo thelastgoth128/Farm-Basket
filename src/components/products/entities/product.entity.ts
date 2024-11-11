@@ -29,6 +29,9 @@ export class Products {
     @Column()
     type: string
 
+    @Column()
+    image : string 
+
     @OneToMany(()=>Shop,shop=>shop.shopid)
     shopid : Shop[]
     
