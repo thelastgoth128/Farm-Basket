@@ -10,7 +10,7 @@ import { ShopModule } from './components/shop/shop.module';
 import { ConfigModule, ConfigService } from '@nestjs/config';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import { Users } from './components/users/entities/user.entity';
-import { Product } from './components/products/entities/product.entity';
+import { Products } from './components/products/entities/product.entity';
 import { Shop } from './components/shop/entities/shop.entity';
 
 @Module({
@@ -24,7 +24,7 @@ import { Shop } from './components/shop/entities/shop.entity';
       useFactory:async (configService : ConfigService)=>({
         type:'postgres',
         url:configService.get<string>('DATABASE_URL'),
-        entities:[Users,Product,Shop],
+        entities:[Users,Products,Shop],
         synchronize: false,
       }),
       inject:[ConfigService]
