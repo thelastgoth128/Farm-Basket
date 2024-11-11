@@ -1,6 +1,13 @@
 import { Injectable } from '@nestjs/common';
-import { CreateMessagingDto } from './dto/create-messaging.dto';
+import { InjectRepository } from '@nestjs/typeorm';
+import { In, Repository } from 'typeorm';
+import { Users } from '../users/entities/user.entity';
+import { Inbox } from './entities/inbox.entity';
+import { CreateInboxDto } from './dto/create-inbox.dto';
+import { InboxParticipants } from './entities/inbox_participants.entity';
 import { UpdateMessagingDto } from './dto/update-messaging.dto';
+import { CreateMessagingDto } from './dto/create-messaging.dto';
+import { Messages } from './entities/messaging.entity';
 
 @Injectable()
 export class MessagingService {
@@ -36,7 +43,7 @@ export class MessagingService {
       message.created_at = new Date();
   
       return await this.messarep.save(message);
-  }
+    }
 
   async createInbox(createInboxDto: CreateInboxDto): Promise<Inbox> {
     const { userid } = createInboxDto;
