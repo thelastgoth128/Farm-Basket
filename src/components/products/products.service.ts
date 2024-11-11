@@ -16,16 +16,15 @@ export class ProductsService {
   ) {}
 
   async createProduct(createProductDto: CreateProductDto){
-    const { userid, ...productData } = createProductDto
+    const { userid,shopid, ...productData } = createProductDto
     const user = await this.userrep.findOne({where : {userid}})
 
     if (!user) {
       throw new NotFoundException('user not found')
     }
-    const product = this.productsRepository.create({
-      ...productData,
-      userid : user
-    })
+    const product = new Products()
+      product.userid = user
+      
     const savedProduct = await this.productsRepository.save(product)
     return savedProduct
   }

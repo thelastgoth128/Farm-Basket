@@ -8,9 +8,9 @@ import { UsersModule } from '../users/users.module';
 @Module({
   imports : [
     TypeOrmModule.forFeature([Products]),UsersModule
-
   ],
   controllers: [ProductsController],
   providers: [ProductsService],
+  exports:[TypeOrmModule]
 })
 export class ProductsModule {}
