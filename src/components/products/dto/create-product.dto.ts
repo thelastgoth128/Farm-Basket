@@ -1,4 +1,4 @@
-import { IsInt, IsString } from "class-validator";
+import { isInt, IsInt, IsString } from "class-validator";
 
 export class CreateProductDto {
     
