@@ -63,14 +63,13 @@ export class ShopService {
     return await this.shoprep.find({relations:['owner']})
   }
 
-  async findOne(@Req() req : Request) {
-    const user = req.user?.userid
-    const owner = await this.shoprep.findOne({where : {owner : {userid : user}}})
+  async findOne(shpoid : number) {
+    const shop = await this.shoprep.findOne({where : {shopid:shpoid}})
     
-    if(!owner){
+    if(!shop){
       throw new UnauthorizedException('you do not have a shop')
     }
-    return owner
+    return shop
   }
 
   async update(shopid: number, updateShopDto: UpdateShopDto) {
