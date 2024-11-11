@@ -19,7 +19,7 @@ import { ImageController } from './components/image/image.controller';
 import { MessagingModule } from './components/messaging/messaging.module';
 
 @Module({
-  imports: [UsersModule,JwtModule,AuthModule, ProductsModule, ShopModule,ImageModule,
+  imports: [UsersModule,JwtModule,AuthModule, ProductsModule, ShopModule,ImageModule,MessagingModule,
     ConfigModule.forRoot({
       isGlobal:true,
       envFilePath: ".env"
