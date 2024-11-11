@@ -5,6 +5,7 @@ import { Users } from '../users/entities/user.entity';
 import { CreateProductDto } from './dto/create-product.dto';
 import { UpdateProductDto } from './dto/update-product.dto';
 import { Products } from './entities/product.entity';
+import { Shop } from '../shop/entities/shop.entity';
 
 @Injectable()
 export class ProductsService {
@@ -12,22 +13,34 @@ export class ProductsService {
     @InjectRepository(Products)
     private productsRepository: Repository<Products>,
     @InjectRepository(Users)
-    private readonly userrep : Repository<Users>
+    private readonly userrep : Repository<Users>,
+    @InjectRepository(Shop)
+    private readonly shoprep : Repository<Shop>
   ) {}
 
   async createProduct(createProductDto: CreateProductDto){
-    const { userid, ...productData } = createProductDto
+    const { userid,shopid, ...productData } = createProductDto
     const user = await this.userrep.findOne({where : {userid}})
+    const shop = await this.shoprep.findOne({where:{shopid}})
 
     if (!user) {
       throw new NotFoundException('user not found')
     }
-    const product = this.productsRepository.create({
-      ...productData,
-      userid : user
-    })
-    const savedProduct = await this.productsRepository.save(product)
-    return savedProduct
+
+    if (!shop) {
+      throw new NotFoundException('Shop does not exist')
+    }
+
+    const product = new Products()
+    product.userid = user
+    product.shopid = shop
+    product.name = createProductDto.name
+    product.price = createProductDto.price
+    product.quantity = createProductDto.quantity
+    product.type = createProductDto.type
+    product.description = createProductDto.description
+
+    return await this.productsRepository.save(product)
   }
 
   async findAllProducts(): Promise<Products[]> {
