@@ -16,4 +16,10 @@ export class Shop {
 
     @Column()
     name : string
+
+    @Column()
+    description : string
+
+    @Column()
+    image : string
 }                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                  

@@ -60,7 +60,7 @@ export class ShopService {
 }
 
   async findAll() {
-    return await this.shoprep.find()
+    return await this.shoprep.find({relations:['owner']})
   }
 
   async findOne(@Req() req : Request) {
