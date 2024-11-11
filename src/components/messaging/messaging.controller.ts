@@ -3,7 +3,8 @@ import { MessagingService } from './messaging.service';
 import { CreateMessagingDto } from './dto/create-messaging.dto';
 import { UpdateMessagingDto } from './dto/update-messaging.dto';
 
-@Controller('messaging')
+@Public()
+@Controller('messages')
 export class MessagingController {
   constructor(private readonly messagingService: MessagingService) {}
 
