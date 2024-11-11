@@ -4,6 +4,7 @@ import { ImageController } from './image.controller';
 import { ShopModule } from '../shop/shop.module';
 import { CloudinaryService } from '../services.ts/cloudinary.service';
 import { ProductsModule } from '../products/products.module';
+import { ProductsService } from '../products/products.service';
 
 @Module({
   imports:[ShopModule,ProductsModule],

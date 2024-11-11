@@ -25,8 +25,8 @@ export class ShopController {
   }
  
   @Get(':id')
-  findOne(@Req() request:Request) {
-    return this.shopService.findOne(request);
+  findOne(@Param('id') id: number) {
+    return this.shopService.findOne(id);
   }
 
   @Patch(':id')

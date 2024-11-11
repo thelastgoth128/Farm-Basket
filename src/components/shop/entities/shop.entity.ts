@@ -1,6 +1,6 @@
 import { Products } from "src/components/products/entities/product.entity";
 import { Users } from "src/components/users/entities/user.entity";
-import { Column, Entity, JoinColumn, ManyToOne, OneToOne, PrimaryGeneratedColumn } from "typeorm";
+import { Column, Entity, JoinColumn, ManyToOne, OneToMany, OneToOne, PrimaryGeneratedColumn } from "typeorm";
 
 
 @Entity()
@@ -24,7 +24,6 @@ export class Shop {
     @Column()
     image : string
 
-    @ManyToOne(()=>Products,product=>product.shopid)
-    @JoinColumn({name : 'product'})
-    product : Products
+    @OneToMany(()=>Products,product=>product.shopid)
+    productid : Products
 }                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                  

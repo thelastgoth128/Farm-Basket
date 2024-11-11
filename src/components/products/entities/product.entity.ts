@@ -4,7 +4,6 @@ import { Column, Entity, JoinColumn, ManyToOne, OneToMany, PrimaryGeneratedColum
 
 @Entity()
 export class Products {
-
     @PrimaryGeneratedColumn()
     productid : number
 
@@ -32,7 +31,8 @@ export class Products {
     @Column()
     image : string 
 
-    @OneToMany(()=>Shop,shop=>shop.shopid)
+    @ManyToOne(()=>Shop,shop=>shop.shopid)
+    @JoinColumn({name:'shopid'})
     shopid : Shop[]
     
 
