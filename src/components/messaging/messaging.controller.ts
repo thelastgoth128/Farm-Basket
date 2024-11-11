@@ -1,7 +1,10 @@
 import { Controller, Get, Post, Body, Patch, Param, Delete } from '@nestjs/common';
 import { MessagingService } from './messaging.service';
-import { CreateMessagingDto } from './dto/create-messaging.dto';
+import { CreateInboxDto } from './dto/create-inbox.dto';
 import { UpdateMessagingDto } from './dto/update-messaging.dto';
+import { Inbox } from './entities/inbox.entity';
+import { Public } from '../auth/guards/public';
+import { CreateMessagingDto } from './dto/create-messaging.dto';
 
 @Public()
 @Controller('messages')
