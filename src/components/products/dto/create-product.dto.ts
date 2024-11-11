@@ -19,4 +19,7 @@ export class CreateProductDto {
 
     @IsString()
     type : string
+
+    @IsString()
+    shopid : number
 }
