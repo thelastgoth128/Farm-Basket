@@ -1,8 +1,9 @@
+import { Shop } from "src/components/shop/entities/shop.entity";
 import { Users } from "src/components/users/entities/user.entity";
-import { Column, Entity, JoinColumn, ManyToOne, PrimaryGeneratedColumn } from "typeorm";
+import { Column, Entity, JoinColumn, ManyToOne, OneToMany, PrimaryGeneratedColumn } from "typeorm";
 
 @Entity()
-export class Product {
+export class Products {
 
     @PrimaryGeneratedColumn()
     productid : number
@@ -27,6 +28,9 @@ export class Product {
 
     @Column()
     type: string
+
+    @OneToMany(()=>Shop,shop=>shop.shopid)
+    shopid : Shop[]
     
 
 }
