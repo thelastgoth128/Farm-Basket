@@ -17,9 +17,9 @@ export class MessagingController {
     return await this.messagingService.createInbox(createInboxDto);
   }
 
-  @Get()
-  findAll() {
-    return this.messagingService.findAll();
+  @Get('inbox/:id/name')
+  async getInboxName(@Param('id') inboxId: number, @Query('userId') userId: number): Promise<string> {
+    return await this.messagingService.getInboxName(inboxId, userId);
   }
 
   @Get(':id')
