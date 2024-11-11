@@ -2,7 +2,7 @@ import { HttpException, HttpStatus, Injectable } from '@nestjs/common';
 import { InjectRepository } from "@nestjs/typeorm";
 import { Shop } from "../shop/entities/shop.entity";
 import { Repository } from "typeorm";
-import { Product } from '../products/entities/product.entity';
+import { Products } from '../products/entities/product.entity';
 
 
 @Injectable()
@@ -10,8 +10,8 @@ export class ImageService {
   constructor(
     @InjectRepository(Shop)
     private readonly shoprep : Repository<Shop>,
-    @InjectRepository(Product)
-    private readonly productrep : Repository<Product>
+    @InjectRepository(Products)
+    private readonly productrep : Repository<Products>
 ){}
 
 async saveShopImageUrl(shopid: number, imageUrl : string): Promise<void> {
