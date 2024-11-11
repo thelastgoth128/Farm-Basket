@@ -33,7 +33,7 @@ export class Products {
 
     @ManyToOne(()=>Shop,shop=>shop.shopid)
     @JoinColumn({name:'shopid'})
-    shopid : Shop[]
+    shopid : Shop
     
 
 }
