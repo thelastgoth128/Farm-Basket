@@ -38,8 +38,39 @@ export class MessagingService {
       return await this.messarep.save(message);
   }
 
-  findAll() {
-    return `This action returns all messaging`;
+  async createInbox(createInboxDto: CreateInboxDto): Promise<Inbox> {
+    const { userid } = createInboxDto;
+
+    const users = await this.userRep.find({
+      where: { userid: In(userid) }
+    });
+
+    if (users.length !== userid.length) {
+      throw new Error('One or more users not found');
+    }
+
+    const inbox = new Inbox();
+    await this.inboxRep.save(inbox);
+
+    const participants = users.map(user => {
+      const participant = new InboxParticipants();
+      participant.inbox = inbox;
+      participant.userid = user;
+      return participant;
+    });
+
+    await this.inboxPartRep.save(participants);
+    return inbox;
+  }
+
+  async getInboxName(inboxId: number, userId: number): Promise<string> {
+    const participants = await this.inboxPartRep.find({
+      where: { inbox: { inboxid: inboxId } }, // Correctly reference the inbox
+      relations: ['userid']
+    });
+
+    const otherParticipants = participants.filter(participant => participant.userid.userid !== userId);
+    return otherParticipants.map(participant => participant.userid.name).join(', ');
   }
 
   findOne(id: number) {
