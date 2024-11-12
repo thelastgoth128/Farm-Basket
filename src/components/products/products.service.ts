@@ -33,7 +33,7 @@ export class ProductsService {
 
     const product = new Products()
     product.userid = user
-    product.shopid = shop
+    product.shop = shop
     product.name = createProductDto.name
     product.price = createProductDto.price
     product.quantity = createProductDto.quantity
@@ -48,11 +48,22 @@ export class ProductsService {
   }
 
   async findProductById(productid: number): Promise<Products> {
-    const product = await this.productsRepository.findOne({where:{productid}});
+    const product = await this.productsRepository.findOne({where:{productid},relations:['shopid']});
     if (!product) {
       throw new NotFoundException('Product not found');
     }
     return product;
+  }
+
+  async findShopProduct(shopid : number) {
+    console.log(shopid)
+   const shop = await this.productsRepository.find({where : {shop:{shopid : shopid}},relations:['shop']})
+
+   if (!shop) {
+    throw new NotFoundException('shop not found')
+   }
+   return shop
+   
   }
 
   async updateProduct(id: number, updateProductDto: UpdateProductDto): Promise<Products> {
