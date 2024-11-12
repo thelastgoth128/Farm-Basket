@@ -1,6 +1,12 @@
-import { Injectable } from '@nestjs/common';
+import { Injectable, NotFoundException, Req, Res } from '@nestjs/common';
 import { CreateReportDto } from './dto/create-report.dto';
 import { UpdateReportDto } from './dto/update-report.dto';
+import { Request, response } from 'express';
+import { InjectRepository } from '@nestjs/typeorm';
+import { Reports } from './entities/report.entity';
+import { Repository } from 'typeorm';
+import { Users } from '../users/entities/user.entity';
+import { Products } from '../products/entities/product.entity';
 
 @Injectable()
 export class ReportsService {
