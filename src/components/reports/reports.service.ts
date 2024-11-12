@@ -59,7 +59,12 @@ export class ReportsService {
     return await this.reportRep.save(report)
   }
 
-  remove(id: number) {
-    return `This action removes a #${id} report`;
+  async remove(id: number) {
+    const report = await this.reportRep.findOne({where: {id}})
+
+    if (!report) {
+      throw new NotFoundException('Report Not Found')
+    }
+    return await this.reportRep.remove(report)
   }
 }
