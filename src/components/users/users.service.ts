@@ -62,6 +62,11 @@ export class UsersService {
     return await this.usersrep.findOne({where : {userid}})
   }
 
+  async getUserStatus(userid : number){
+    const user = await this.usersrep.findOne({where : {userid}})
+    return user.status
+  }
+
   async update(updateUserDto: UpdateUserDto,userid : number,@Req() req:Request) {
     const user = req.user?.userid
     const requester = await this.usersrep.findOne({where : {userid:user}})
