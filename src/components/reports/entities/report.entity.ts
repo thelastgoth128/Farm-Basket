@@ -1,3 +1,4 @@
+import { ReportStatus } from "src/components/enums/report.status.enum";
 import { Products } from "src/components/products/entities/product.entity";
 import { Users } from "src/components/users/entities/user.entity";
 import { Column, Entity, JoinColumn, ManyToOne, PrimaryGeneratedColumn } from "typeorm";
@@ -22,8 +23,8 @@ export class Reports {
     @Column()
     details : string
 
-    @Column({default : 'pending'})
-    status : string
+    @Column({default : 'PENDING'})
+    status : ReportStatus
 
     @Column()
     reported_date : Date
@@ -36,6 +37,9 @@ export class Reports {
 
     @Column()
     ban_duration : number
+
+    @Column()
+    ban_enddate : Date
 
     @Column()
     punishment : string

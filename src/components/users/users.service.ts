@@ -8,6 +8,7 @@ import { JwtService } from '@nestjs/jwt';
 import { Request, response, Response } from 'express';
 import { Role } from '../enums/role.enums';
 import { MailService } from '../services.ts/mail.service';
+import { AccountStatus } from '../enums/status.enums';
 
 @Injectable()
 export class UsersService {
@@ -58,7 +59,7 @@ export class UsersService {
     return await this.usersrep.findOne({where : {email}})
   }
 
-  async findOne(userid: number) {
+  async findOne(userid: number) : Promise <Users> {
     return await this.usersrep.findOne({where : {userid}})
   }
 
@@ -104,7 +105,7 @@ export class UsersService {
   async activateUser(userid : number): Promise<void> {
     await this.usersrep.update(userid, {status : AccountStatus.ACTIVE})
   }
-
+  
   async makeAdmin(userid,updateUserDto : UpdateUserDto){
     const newAdmin = await this.usersrep.findOne({where : {userid}})
     if (!newAdmin){
