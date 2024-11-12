@@ -1,4 +1,5 @@
 import { Role } from "src/components/enums/role.enums";
+import { AccountStatus } from "src/components/enums/status.enums";
 import { InboxParticipants } from "src/components/messaging/entities/inbox_participants.entity";
 import { Messages } from "src/components/messaging/entities/messaging.entity";
 import { Column, Entity, OneToMany, PrimaryGeneratedColumn } from "typeorm";
@@ -39,4 +40,11 @@ export class Users {
 
     @OneToMany(()=>Messages,message=>message.userid)
     message : Messages[]
+
+    @Column({
+        type : 'enum',
+        enum: AccountStatus,
+        default:AccountStatus.ACTIVE
+    })
+    status : AccountStatus
 }
