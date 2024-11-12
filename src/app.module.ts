@@ -22,6 +22,7 @@ import { Messages } from './components/messaging/entities/messaging.entity';
 import { InboxParticipants } from './components/messaging/entities/inbox_participants.entity';
 import { ReportsModule } from './components/reports/reports.module';
 import { Reports } from './components/reports/entities/report.entity';
+import { PaymentModule } from './components/payment/payment.module';
 
 @Module({
   imports: [UsersModule,JwtModule,AuthModule, ProductsModule, ShopModule,ImageModule,MessagingModule,ReportsModule,
@@ -42,6 +43,7 @@ import { Reports } from './components/reports/entities/report.entity';
     MulterModule.register({
       dest:'./uploads'
     }),
+    PaymentModule,
     
   ],
   controllers: [AppController,ImageController],//imagecontroller
