@@ -30,6 +30,10 @@ export class ReportsController {
     return this.reportsService.update(+id, updateReportDto);
   }
 
+  @Patch(':userid/deactivate/:id')
+  deactivateUser(@Param('userid') userid:number,@Param('id') id:number,@Body('days') days:number, @Res() response : Response) {
+    return this.reportsService.deactivateUser(userid,days,id,response)
+  } 
   @Delete(':id')
   remove(@Param('id') id: string,@Res() response:Response) {
     return this.reportsService.remove(+id,response);
