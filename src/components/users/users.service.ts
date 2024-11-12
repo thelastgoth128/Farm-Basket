@@ -76,6 +76,9 @@ export class UsersService {
     if (requester.userid !== account.userid) {
       throw new ForbiddenException('Cannot update this Account')
     }
+    if (updateUserDto.role && updateUserDto.role === 'ADMIN') {
+      throw new ForbiddenException('You cannot update role to admin')
+    }
     Object.assign(requester,updateUserDto)
 
     await this.usersrep.save(requester)
