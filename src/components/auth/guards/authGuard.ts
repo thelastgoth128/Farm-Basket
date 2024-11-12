@@ -32,6 +32,13 @@ export class AuthGuard implements CanActivate{
                 }
             )
             request['user'] =data
+            
+            const userid = data.userid
+            const userStatus = await this.userService.getUserStatus(userid)
+
+            if (userStatus !== 'ACTIVE') {
+                throw new UnauthorizedException('Account is not active')
+            }
         }catch(error){
             throw new UnauthorizedException('access denied:', error)
         }
