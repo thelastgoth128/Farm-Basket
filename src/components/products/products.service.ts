@@ -56,7 +56,6 @@ export class ProductsService {
   }
 
   async findShopProduct(shopid : number) {
-    console.log(shopid)
    const shop = await this.productsRepository.find({where : {shop:{shopid : shopid}},relations:['shop']})
 
    if (!shop) {
