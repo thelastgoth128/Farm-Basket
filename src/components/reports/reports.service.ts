@@ -50,8 +50,13 @@ export class ReportsService {
     return await this.reportRep.findOne({where : {id}})
   }
 
-  update(id: number, updateReportDto: UpdateReportDto) {
-    return `This action updates a #${id} report`;
+  async update(id: number, updateReportDto: UpdateReportDto) {
+    const report = await this.reportRep.findOne({where : {id}})
+    if (!report){
+      throw new NotFoundException('Report Not Found')
+    }
+    Object.assign(report,updateReportDto)
+    return await this.reportRep.save(report)
   }
 
   remove(id: number) {
