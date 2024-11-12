@@ -2,15 +2,17 @@ import { Controller, Get, Post, Body, Patch, Param, Delete, Res, Req } from '@ne
 import { ReportsService } from './reports.service';
 import { CreateReportDto } from './dto/create-report.dto';
 import { UpdateReportDto } from './dto/update-report.dto';
-import { Request } from 'express';
+import { Response } from 'express';
+import { Public } from '../auth/guards/public';
 
+@Public()
 @Controller('reports')
 export class ReportsController {
   constructor(private readonly reportsService: ReportsService) {}
 
   @Post('create')
-  create(@Body() createReportDto: CreateReportDto,@Req() req: Request) {
-    return this.reportsService.create(createReportDto,req);
+  create(@Body() createReportDto: CreateReportDto,@Res() response: Response) {
+    return this.reportsService.create(createReportDto,response);
   }
 
   @Get('all')
@@ -29,7 +31,7 @@ export class ReportsController {
   }
 
   @Delete(':id')
-  remove(@Param('id') id: string) {
-    return this.reportsService.remove(+id);
+  remove(@Param('id') id: string,@Res() response:Response) {
+    return this.reportsService.remove(+id,response);
   }
 }
