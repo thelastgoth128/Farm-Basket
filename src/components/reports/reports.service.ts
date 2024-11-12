@@ -102,9 +102,21 @@ export class ReportsService {
 
   @Cron(CronExpression.EVERY_HOUR)
   async chechExpiredBans() : Promise<void> {
-    const noew = new Date()
-    const usersToReactivate = await this.userrep.find({where:{status: AccountStatus.DEACTIVATED}}) 
-    await this.reportRep.find()
+    const now = new Date()
+    const reportsWithDeactivate = await this.reportRep.find({
+      where: {ban_enddate : LessThanOrEqual(now)},relations:['reporter']
+    })
+
+    for (const report of reportsWithDeactivate) {
+      const user = report.reporter
+      if(user.status === AccountStatus.DEACTIVATED) {
+        user.status = AccountStatus.ACTIVE;
+        await this.userrep.save(user)
+      }
+      report.ban_duration = null
+      report.ban_enddate = null
+      await this.reportRep.save(report)
+    }
   }
 
   async remove(id: number,@Res() res:Response) {
