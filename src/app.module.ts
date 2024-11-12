@@ -20,9 +20,11 @@ import { MessagingModule } from './components/messaging/messaging.module';
 import { Inbox } from './components/messaging/entities/inbox.entity';
 import { Messages } from './components/messaging/entities/messaging.entity';
 import { InboxParticipants } from './components/messaging/entities/inbox_participants.entity';
+import { ReportsModule } from './components/reports/reports.module';
+import { Reports } from './components/reports/entities/report.entity';
 
 @Module({
-  imports: [UsersModule,JwtModule,AuthModule, ProductsModule, ShopModule,ImageModule,MessagingModule,
+  imports: [UsersModule,JwtModule,AuthModule, ProductsModule, ShopModule,ImageModule,MessagingModule,ReportsModule,
     ConfigModule.forRoot({
       isGlobal:true,
       envFilePath: ".env"
@@ -32,7 +34,7 @@ import { InboxParticipants } from './components/messaging/entities/inbox_partici
       useFactory:async (configService : ConfigService)=>({
         type:'postgres',
         url:configService.get<string>('DATABASE_URL'),
-        entities:[Users,Products,Shop,Inbox,Messages,InboxParticipants],
+        entities:[Users,Products,Shop,Inbox,Messages,InboxParticipants,Reports],
         synchronize: false,
       }),
       inject:[ConfigService]
@@ -40,7 +42,6 @@ import { InboxParticipants } from './components/messaging/entities/inbox_partici
     MulterModule.register({
       dest:'./uploads'
     }),
-
     
   ],
   controllers: [AppController,ImageController],//imagecontroller

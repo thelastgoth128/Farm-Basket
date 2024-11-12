@@ -8,6 +8,7 @@ import { JwtService } from '@nestjs/jwt';
 import { Request, response, Response } from 'express';
 import { Role } from '../enums/role.enums';
 import { MailService } from '../services.ts/mail.service';
+import { AccountStatus } from '../enums/status.enums';
 
 @Injectable()
 export class UsersService {
@@ -58,8 +59,13 @@ export class UsersService {
     return await this.usersrep.findOne({where : {email}})
   }
 
-  async findOne(userid: number) {
+  async findOne(userid: number) : Promise <Users> {
     return await this.usersrep.findOne({where : {userid}})
+  }
+
+  async getUserStatus(userid : number){
+    const user = await this.usersrep.findOne({where : {userid}})
+    return user.status
   }
 
   async update(updateUserDto: UpdateUserDto,userid : number,@Req() req:Request) {
@@ -76,6 +82,9 @@ export class UsersService {
     if (requester.userid !== account.userid) {
       throw new ForbiddenException('Cannot update this Account')
     }
+    if (updateUserDto.role && updateUserDto.role === 'ADMIN') {
+      throw new ForbiddenException('You cannot update role to admin')
+    }
     Object.assign(requester,updateUserDto)
 
     await this.usersrep.save(requester)
@@ -85,6 +94,18 @@ export class UsersService {
     }
   }
 
+  async deactiveUser(userid : number) : Promise<void> {
+    await this.usersrep.update(userid, { status : AccountStatus.DEACTIVATED})
+  }
+  
+  async banUser(userid : number): Promise<void> {
+    await this.usersrep.update(userid,{ status: AccountStatus.BANNED })
+  }
+
+  async activateUser(userid : number): Promise<void> {
+    await this.usersrep.update(userid, {status : AccountStatus.ACTIVE})
+  }
+  
   async makeAdmin(userid,updateUserDto : UpdateUserDto){
     const newAdmin = await this.usersrep.findOne({where : {userid}})
     if (!newAdmin){

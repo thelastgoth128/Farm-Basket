@@ -1,3 +1,4 @@
+import { Reports } from "src/components/reports/entities/report.entity";
 import { Shop } from "src/components/shop/entities/shop.entity";
 import { Users } from "src/components/users/entities/user.entity";
 import { Column, Entity, JoinColumn, ManyToOne, OneToMany, PrimaryGeneratedColumn } from "typeorm";
@@ -31,9 +32,12 @@ export class Products {
     @Column()
     image : string 
 
-    @ManyToOne(()=>Shop,shop=>shop.shopid)
+    @ManyToOne(()=>Shop,shop=>shop.products)
     @JoinColumn({name:'shopid'})
-    shopid : Shop
+    shop : Shop
+
+    @OneToMany(()=>Reports,report=>report.product)
+    reports : Reports[]
     
 
 }
