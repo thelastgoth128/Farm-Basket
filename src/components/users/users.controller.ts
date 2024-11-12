@@ -42,13 +42,13 @@ export class UsersController {
     return this.usersService.findOne(+id);
   }
 
-  @Patch('update')
-  update(@Body() updateUserDto: UpdateUserDto,@Req()request:Request) {
-    return this.usersService.update(updateUserDto,request);
+  @Patch('update/:id')
+  update(@Param('id') userid: number, @Body() updateUserDto: UpdateUserDto,@Req()request:Request) {
+    return this.usersService.update(updateUserDto,userid,request);
   }
 
 
-  @Patch('userid')
+  @Patch(':userid')
   makeAdmin(@Param('userid',ParseIntPipe) userid: number, @Body() UpdateUserDto: UpdateUserDto){
     return this.usersService.makeAdmin(userid,UpdateUserDto)
   }
@@ -56,5 +56,10 @@ export class UsersController {
   @Delete('delete')
   remove(@Req() request:Request) {
     return this.usersService.remove(request);
+  }
+
+  @Delete(':userid')
+  removedByAdmin(@Param('userid') userid : number) {
+    return this.usersService.removedByAdmin(userid)
   }
 }
