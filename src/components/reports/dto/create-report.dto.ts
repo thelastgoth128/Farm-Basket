@@ -8,13 +8,13 @@ reporter : number
 product : number
 
 @IsString()
-reason : number
+reason : string
 
 @IsString()
-details : number
+details : string
 
 @IsString()
-status : number
+status : string
 
 @IsDateString()
 reported_date : Date
@@ -23,7 +23,7 @@ reported_date : Date
 resolution_details : string
 
 @IsDateString()
-reolution_date : Date
+resolution_date : Date
 
 @IsInt()
 ban_duartion : number
