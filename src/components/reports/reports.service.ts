@@ -3,7 +3,7 @@ import { CreateReportDto } from './dto/create-report.dto';
 import { UpdateReportDto } from './dto/update-report.dto';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Reports } from './entities/report.entity';
-import { Repository } from 'typeorm';
+import { LessThanOrEqual, Repository } from 'typeorm';
 import { Users } from '../users/entities/user.entity';
 import { Products } from '../products/entities/product.entity';
 import { Response } from 'express';
@@ -76,7 +76,7 @@ export class ReportsService {
     return await this.reportRep.save(report)
   }
 
-  async deactivateUser(userid : number, days: number,id : number): Promise<void> {
+  async deactivateUser(userid : number, days: number,id : number,@Res() res:Response): Promise<void> {
     const user = await this.userrep.findOne({where : { userid}})
     const report = await this.reportRep.findOne({where : {id}})
 
@@ -98,13 +98,35 @@ export class ReportsService {
     report.resolution_date = new Date()
 
     await this.reportRep.save(report)
+
+    try{
+      res.status(200).json({
+        message : 'Successfully set punishment'
+      })
+    }catch (error){
+      res.status(500).json({
+        message : 'Internal Server error'
+      })
+    }
   }
 
   @Cron(CronExpression.EVERY_HOUR)
   async chechExpiredBans() : Promise<void> {
-    const noew = new Date()
-    const usersToReactivate = await this.userrep.find({where:{status: AccountStatus.DEACTIVATED}}) 
-    await this.reportRep.find()
+    const now = new Date()
+    const reportsWithDeactivate = await this.reportRep.find({
+      where: {ban_enddate : LessThanOrEqual(now)},relations:['reporter']
+    })
+
+    for (const report of reportsWithDeactivate) {
+      const user = report.reporter
+      if(user.status === AccountStatus.DEACTIVATED) {
+        user.status = AccountStatus.ACTIVE;
+        await this.userrep.save(user)
+      }
+      report.ban_duration = null
+      report.ban_enddate = null
+      await this.reportRep.save(report)
+    }
   }
 
   async remove(id: number,@Res() res:Response) {

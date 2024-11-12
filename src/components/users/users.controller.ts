@@ -53,6 +53,16 @@ export class UsersController {
     return this.usersService.makeAdmin(userid,UpdateUserDto)
   }
 
+  @Patch('ban/:userid')
+  banUser(@Param('userid')userid: number) {
+    return this.usersService.banUser(userid)
+  }
+
+  @Patch('activate/:userid')
+  activateUser(@Param('userid') userid : number) {
+    return this.usersService.activateUser(userid)
+  }
+
   @Delete('delete')
   remove(@Req() request:Request) {
     return this.usersService.remove(request);
