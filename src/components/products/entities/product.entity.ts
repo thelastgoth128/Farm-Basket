@@ -32,9 +32,9 @@ export class Products {
     @Column()
     image : string 
 
-    @ManyToOne(()=>Shop,shop=>shop.shopid)
+    @ManyToOne(()=>Shop,shop=>shop.products)
     @JoinColumn({name:'shopid'})
-    shopid : Shop
+    shop : Shop
 
     @OneToMany(()=>Reports,report=>report.product)
     reports : Reports[]
