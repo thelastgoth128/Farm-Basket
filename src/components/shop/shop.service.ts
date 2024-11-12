@@ -43,6 +43,7 @@ export class ShopService {
       ...UpdateUserDto,
       role : Role.SELLER
      },
+     user,
       req
      )
     await this.mailService.sendShopCreatedEmail(ShopOwner.email,ShopOwner.name,createShopDto.name)
@@ -88,16 +89,20 @@ export class ShopService {
   async remove(shopid: number,@Req() req: Request,@Res() res:Response) {
     try{
     const shop = await this.shoprep.findOne({where :{shopid}})
+    const user = req.user?.userid
 
     if (!shop){
       throw new NotFoundException('Shop Not Found')
     }
     await this.shoprep.delete(shopid)
-    await this.usersService.update({
+    await this.usersService.update(
+      {
      ...UpdateUserDto,
      role : Role.BUYER
     },
-     req
+    user,
+     req,
+      
     )
     res.setHeader('Role',Role.BUYER)
     res.status(200).json({
