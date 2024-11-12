@@ -85,6 +85,18 @@ export class UsersService {
     }
   }
 
+  async deactiveUser(userid : number) : Promise<void> {
+    await this.usersrep.update(userid, { status : AccountStatus.DEACTIVATED})
+  }
+  
+  async banUser(userid : number): Promise<void> {
+    await this.usersrep.update(userid,{ status: AccountStatus.BANNED })
+  }
+
+  async activateUser(userid : number): Promise<void> {
+    await this.usersrep.update(userid, {status : AccountStatus.ACTIVE})
+  }
+
   async makeAdmin(userid,updateUserDto : UpdateUserDto){
     const newAdmin = await this.usersrep.findOne({where : {userid}})
     if (!newAdmin){
