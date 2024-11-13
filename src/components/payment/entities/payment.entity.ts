@@ -1,20 +1,17 @@
 import { PaymentStatus } from "src/components/enums/payment.enum";
 import { Products } from "src/components/products/entities/product.entity";
 import { Users } from "src/components/users/entities/user.entity";
-import { Column, JoinColumn, ManyToOne, PrimaryGeneratedColumn } from "typeorm";
+import { Column, JoinColumn, ManyToOne, OneToMany, PrimaryGeneratedColumn } from "typeorm";
 
 export class Payments {
     @PrimaryGeneratedColumn()
     id : number
 
-   
-    
-
     @Column()
     amount : string
 
     @Column({unique:true})
-    tax_ref : string
+    tx_ref : string
 
     @Column({
         type:'enum',
@@ -44,4 +41,12 @@ export class Payments {
         nullable : true
     })
     completed_at : Date
+
+    @ManyToOne(()=> Products, product => product.payments)
+    @JoinColumn({name: 'productid'})
+    product: Products
+
+    @ManyToOne(()=> Users, user=> user.payments)
+    @JoinColumn({name : 'userid'})
+    user : Users
 }
