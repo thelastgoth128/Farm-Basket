@@ -45,8 +45,7 @@ import { Webhook } from './components/webhook/entities/webhook.entity';
     }),
     MulterModule.register({
       dest:'./uploads'
-    }),
-    WebhookModule,    
+    }),  
   ],
   controllers: [AppController,ImageController],
   providers: [AppService,CloudinaryService],
