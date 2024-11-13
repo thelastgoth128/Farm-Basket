@@ -53,6 +53,6 @@ export class Users {
     @OneToMany(()=>Reports,report=>report.reporter)
     reports : Reports[]
 
-    @OneToMany(()=>Payments,payment=>payment.userid)
-    payment : Payments[]
+    @OneToMany(()=>Payments,payment=>payment.user)
+    payments : Payments[]
 }

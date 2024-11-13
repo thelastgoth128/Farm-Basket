@@ -1,34 +1,34 @@
-import { Controller, Get, Post, Body, Patch, Param, Delete } from '@nestjs/common';
+import { Controller, Get, Post, Body, Patch, Param, Delete, Req } from '@nestjs/common';
 import { PaymentService } from './payment.service';
 import { CreatePaymentDto } from './dto/create-payment.dto';
 import { UpdatePaymentDto } from './dto/update-payment.dto';
+import { Public } from '../auth/guards/public';
+import { InitialPayoutDto } from './dto/create-initialpayout.dto';
+import { Request } from 'express';
 
-@Controller('payment')
+@Public()
+@Controller('payments')
 export class PaymentController {
   constructor(private readonly paymentService: PaymentService) {}
 
-  @Post()
-  create(@Body() createPaymentDto: CreatePaymentDto) {
-    return this.paymentService.create(createPaymentDto);
+  @Post('make-payment')
+  create(@Body() createPaymentDto: CreatePaymentDto, @Req() req:Request) {
+    return this.paymentService.processPayment(createPaymentDto,req);
   }
 
-  @Get()
-  findAll() {
-    return this.paymentService.findAll();
+  @Post('cash-out')
+  initiatePayout(@Body() initialPayoutDto: InitialPayoutDto) {
+    const { mobile, amount } = initialPayoutDto
+    return this.paymentService.initiatePayout(mobile,amount)
   }
 
-  @Get(':id')
-  findOne(@Param('id') id: string) {
-    return this.paymentService.findOne(+id);
+  @Get('status/:tx_ref')
+  getPaymentsStatus(@Param('tx_ref') tx_ref : string) {
+    return this.paymentService.getPaymentStatus(tx_ref)
   }
 
-  @Patch(':id')
-  update(@Param('id') id: string, @Body() updatePaymentDto: UpdatePaymentDto) {
-    return this.paymentService.update(+id, updatePaymentDto);
-  }
-
-  @Delete(':id')
-  remove(@Param('id') id: string) {
-    return this.paymentService.remove(+id);
+  @Get('verify/:tx_ref')
+  verifyPaymnet(@Param('tx_ref') tx_ref:string) {
+    return this.paymentService.verifyPayment(tx_ref)
   }
 }
