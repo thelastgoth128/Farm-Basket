@@ -1,6 +1,8 @@
 import { Controller, Post, Body, Headers, HttpException, HttpStatus } from '@nestjs/common';
 import { WebhookService } from './webhook.service';
+import { Public } from '../auth/guards/public';
 
+@Public()
 @Controller('webhooks')
 export class WebhookController {
   constructor(
