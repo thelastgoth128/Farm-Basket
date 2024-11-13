@@ -26,9 +26,11 @@ import { PaymentModule } from './components/payment/payment.module';
 import { Payments } from './components/payment/entities/payment.entity';
 import { WebhookModule } from './components/webhook/webhook.module';
 import { Webhook } from './components/webhook/entities/webhook.entity';
+import { NotificationsModule } from './components/notifications/notifications.module';
+import { Notifications } from './components/notifications/entities/notification.entity';
 
 @Module({
-  imports: [UsersModule,JwtModule,AuthModule, ProductsModule, ShopModule,ImageModule,MessagingModule,ReportsModule,PaymentModule,WebhookModule,
+  imports: [UsersModule,JwtModule,AuthModule, ProductsModule, ShopModule,ImageModule,MessagingModule,ReportsModule,PaymentModule,WebhookModule, NotificationsModule, 
     ConfigModule.forRoot({
       isGlobal:true,
       envFilePath: ".env"
@@ -38,14 +40,14 @@ import { Webhook } from './components/webhook/entities/webhook.entity';
       useFactory:async (configService : ConfigService)=>({
         type:'postgres',
         url:configService.get<string>('DATABASE_URL'),
-        entities:[Users,Products,Shop,Inbox,Messages,InboxParticipants,Reports,Payments,Webhook],
+        entities:[Users,Products,Shop,Inbox,Messages,InboxParticipants,Reports,Payments,Webhook,Notifications],
         synchronize: false,
       }),
       inject:[ConfigService]
     }),
     MulterModule.register({
       dest:'./uploads'
-    }),  
+    }), 
   ],
   controllers: [AppController,ImageController],
   providers: [AppService,CloudinaryService],
