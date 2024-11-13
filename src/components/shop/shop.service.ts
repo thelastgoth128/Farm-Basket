@@ -10,6 +10,7 @@ import { UsersService } from '../users/users.service';
 import { UpdateUserDto } from '../users/dto/update-user.dto';
 import { Role } from '../enums/role.enums';
 import { MailService } from '../services.ts/mail.service';
+import { NotificationsService } from '../notifications/notifications.service';
 
 @Injectable()
 export class ShopService {
@@ -20,7 +21,8 @@ export class ShopService {
     private readonly usersrep : Repository<Users>,
     @Inject()
     private usersService : UsersService,
-    private mailService : MailService
+    private mailService : MailService,
+    private readonly notify : NotificationsService,
   ){}
 
   async create(createShopDto: CreateShopDto,@Req() req:Request,@Res() res:Response) {
@@ -39,13 +41,19 @@ export class ShopService {
     });
 
     await this.shoprep.save(shop)
+    await this.notify.create({
+    user: user,
+    isread: false,
+    created_at: new Date(),
+    text:'You have successfully craeted a shop,Explore our different features in our app.post your firts product in a single click'      
+    })
     await this.usersService.update({
       ...UpdateUserDto,
       role : Role.SELLER
      },
      user,
       req
-     )
+    )
     await this.mailService.sendShopCreatedEmail(ShopOwner.email,ShopOwner.name,createShopDto.name)
     
     res.setHeader('Role',Role.SELLER)
