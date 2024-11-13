@@ -1,4 +1,4 @@
-import { HttpException, HttpStatus, Injectable } from '@nestjs/common';
+import { HttpException, HttpStatus, Injectable, NotFoundException, Req } from '@nestjs/common';
 import { CreatePaymentDto } from './dto/create-payment.dto';
 import { UpdatePaymentDto } from './dto/update-payment.dto';
 import { InjectRepository } from '@nestjs/typeorm';
@@ -8,6 +8,9 @@ import { Repository } from 'typeorm';
 import { Payments } from './entities/payment.entity';
 import { v4 as uuidv4 } from 'uuid'
 import { firstValueFrom } from 'rxjs';
+import { PaymentStatus } from '../enums/payment.enum';
+import { Request } from 'express';
+import { Products } from '../products/entities/product.entity';
 
 @Injectable()
 export class PaymentService {
@@ -16,7 +19,9 @@ export class PaymentService {
     private readonly paymentrep : Repository<Payments>,
     @InjectRepository(Users)
     private readonly usersrep : Repository<Users>,
-    private httpService : HttpService
+    private httpService : HttpService,
+    @InjectRepository(Products)
+    private readonly productrep : Repository<Products>,
 
   ){}
 
@@ -38,13 +43,36 @@ export class PaymentService {
     return uuidv4()
   }
 
-
-  async processPayment(createPaymentDto : CreatePaymentDto): Promise<any> {
-    const { amount,mobile } = createPaymentDto
+  async processPayment(createPaymentDto : CreatePaymentDto,@Req() req:Request): Promise<any> {
+    const { amount,mobile,productid } = createPaymentDto
     const mobileMoneyOperatorId = this.getMobileMoneyOperatorIds(mobile)
     const charge_id = this.transactionId()
+    const name = req.user?.name
+    const email = req.user?.email
+    const userid = req.user.userid
 
     createPaymentDto.tx_ref = this.transactionId()
+
+    const user = await this.usersrep.findOne({where : {userid}})
+    const product = await this.productrep.findOne({where : {productid}})
+
+    if (!user || !product) {
+      throw new NotFoundException('User or product not found')
+    }
+    
+    const payment = new Payments()
+      payment.tx_ref = createPaymentDto.tx_ref,
+      payment.amount,
+      payment.mobile,
+      payment.currency = 'MWK',
+      payment.status= PaymentStatus.PENDING,
+      payment.charges = 0,
+      payment.created_at = new Date(),
+      payment.completed_at= null,
+      payment.user = user,
+      payment.product = product
+    
+      await this.paymentrep.save(payment)
 
     const options = {
       headers: {
@@ -63,7 +91,10 @@ export class PaymentService {
             mobile,
             mobile_money_operator_ref_id: mobileMoneyOperatorId,
             amount : amount,
-            charge_id: charge_id
+            charge_id: charge_id,
+            created_at : new Date(),
+            first_name : name,
+            email,
           },
           options
         )
@@ -71,6 +102,11 @@ export class PaymentService {
       const data = response.data
 
       if ( data.status === 'success') {
+        payment.status = PaymentStatus.COMPLETED
+        payment.charges = data.data.charges || 0
+        payment.completed_at = new Date()
+        await this.paymentrep.save(payment)
+
         return {
           statusCode: 200,
           message: 'Payment initiated successfully',
@@ -92,7 +128,14 @@ export class PaymentService {
     try {
       const response = await firstValueFrom(
         this.httpService.get(
-          `https://api.paychangu.com/payment/status/${tx_ref}`
+          `https://api.paychangu.com/payment/status/${tx_ref}`,
+          {
+            headers: {
+              Accept: 'application/json',
+              'Content-Type': 'application/json',
+              Authorization: `Bearer ${process.env.PAYCHANGU_SECRET_KEY}`,
+          }
+        }
         )
       )
       const data = response.data
@@ -124,7 +167,9 @@ export class PaymentService {
           {
             headers: {
               Accept: 'application/json',
+              'Content-Type': 'application/json',
               Authorization: `Bearer ${process.env.PAYCHANGU_SECRET_KEY}`,
+              
           }
         }
         )
@@ -148,10 +193,10 @@ export class PaymentService {
     }catch (error) {
       console.error(
         'Error verifying payment:',
-        error.response.data || error.message,
+        error?.response?.data || error.message,
       )
       throw new HttpException(
-        error.resposne.data.message || 'An error occured while verifying payment.',
+        error?.resposne?.data?.message || 'An error occured while verifying payment.',
         HttpStatus.INTERNAL_SERVER_ERROR
       )
     }
@@ -197,4 +242,5 @@ export class PaymentService {
       throw new HttpException('An error occurred while processing payout.', HttpStatus.INTERNAL_SERVER_ERROR);
     }
   }
+
 }
