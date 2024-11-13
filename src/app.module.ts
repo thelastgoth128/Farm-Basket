@@ -22,9 +22,11 @@ import { Messages } from './components/messaging/entities/messaging.entity';
 import { InboxParticipants } from './components/messaging/entities/inbox_participants.entity';
 import { ReportsModule } from './components/reports/reports.module';
 import { Reports } from './components/reports/entities/report.entity';
+import { PaymentModule } from './components/payment/payment.module';
+import { Payments } from './components/payment/entities/payment.entity';
 
 @Module({
-  imports: [UsersModule,JwtModule,AuthModule, ProductsModule, ShopModule,ImageModule,MessagingModule,ReportsModule,
+  imports: [UsersModule,JwtModule,AuthModule, ProductsModule, ShopModule,ImageModule,MessagingModule,ReportsModule,PaymentModule,
     ConfigModule.forRoot({
       isGlobal:true,
       envFilePath: ".env"
@@ -34,15 +36,14 @@ import { Reports } from './components/reports/entities/report.entity';
       useFactory:async (configService : ConfigService)=>({
         type:'postgres',
         url:configService.get<string>('DATABASE_URL'),
-        entities:[Users,Products,Shop,Inbox,Messages,InboxParticipants,Reports],
+        entities:[Users,Products,Shop,Inbox,Messages,InboxParticipants,Reports,Payments],
         synchronize: false,
       }),
       inject:[ConfigService]
     }),
     MulterModule.register({
       dest:'./uploads'
-    }),
-    
+    }),    
   ],
   controllers: [AppController,ImageController],//imagecontroller
   providers: [AppService,CloudinaryService],//cloudinaryservice
