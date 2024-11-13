@@ -25,9 +25,10 @@ import { Reports } from './components/reports/entities/report.entity';
 import { PaymentModule } from './components/payment/payment.module';
 import { Payments } from './components/payment/entities/payment.entity';
 import { WebhookModule } from './components/webhook/webhook.module';
+import { Webhook } from './components/webhook/entities/webhook.entity';
 
 @Module({
-  imports: [UsersModule,JwtModule,AuthModule, ProductsModule, ShopModule,ImageModule,MessagingModule,ReportsModule,PaymentModule,
+  imports: [UsersModule,JwtModule,AuthModule, ProductsModule, ShopModule,ImageModule,MessagingModule,ReportsModule,PaymentModule,WebhookModule,
     ConfigModule.forRoot({
       isGlobal:true,
       envFilePath: ".env"
@@ -37,7 +38,7 @@ import { WebhookModule } from './components/webhook/webhook.module';
       useFactory:async (configService : ConfigService)=>({
         type:'postgres',
         url:configService.get<string>('DATABASE_URL'),
-        entities:[Users,Products,Shop,Inbox,Messages,InboxParticipants,Reports,Payments],
+        entities:[Users,Products,Shop,Inbox,Messages,InboxParticipants,Reports,Payments,Webhook],
         synchronize: false,
       }),
       inject:[ConfigService]
@@ -47,8 +48,8 @@ import { WebhookModule } from './components/webhook/webhook.module';
     }),
     WebhookModule,    
   ],
-  controllers: [AppController,ImageController],//imagecontroller
-  providers: [AppService,CloudinaryService],//cloudinaryservice
+  controllers: [AppController,ImageController],
+  providers: [AppService,CloudinaryService],
 })
 export class AppModule implements NestModule {
   configure(consumer: MiddlewareConsumer) {
