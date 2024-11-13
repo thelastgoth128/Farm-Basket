@@ -49,7 +49,7 @@ export class PaymentService {
     const charge_id = this.transactionId()
     const name = req.user?.name
     const email = req.user?.email
-    const userid = req.user.userid
+    const userid = req.user?.userid
 
     createPaymentDto.tx_ref = this.transactionId()
 
@@ -62,8 +62,8 @@ export class PaymentService {
     
     const payment = new Payments()
       payment.tx_ref = createPaymentDto.tx_ref,
-      payment.amount,
-      payment.mobile,
+      payment.amount = amount,
+      payment.mobile = mobile,
       payment.currency = 'MWK',
       payment.status= PaymentStatus.PENDING,
       payment.charges = 0,
