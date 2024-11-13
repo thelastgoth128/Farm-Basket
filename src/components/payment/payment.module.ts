@@ -9,7 +9,7 @@ import { ProductsModule } from '../products/products.module';
 
 @Module({
   imports:[
-    TypeOrmModule.forFeature([Payments]),UsersModule,HttpModule,ProductsModule
+    TypeOrmModule.forFeature([Payments]),UsersModule,HttpModule,ProductsModule,
   ],
   controllers: [PaymentController],
   providers: [PaymentService],
