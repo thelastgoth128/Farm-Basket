@@ -40,7 +40,6 @@ export class Products {
     @OneToMany(()=>Reports,report=>report.product)
     reports : Reports[]
 
-    @OneToMany(()=>Payments,payment=>payment.product)
-    payments : Payments[] 
-
+    @OneToMany(()=>Payments,payment=>payment.product) 
+    payment : Payments[];
 }
