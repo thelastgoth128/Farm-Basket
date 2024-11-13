@@ -24,6 +24,7 @@ import { ReportsModule } from './components/reports/reports.module';
 import { Reports } from './components/reports/entities/report.entity';
 import { PaymentModule } from './components/payment/payment.module';
 import { Payments } from './components/payment/entities/payment.entity';
+import { WebhookModule } from './components/webhook/webhook.module';
 
 @Module({
   imports: [UsersModule,JwtModule,AuthModule, ProductsModule, ShopModule,ImageModule,MessagingModule,ReportsModule,PaymentModule,
@@ -43,7 +44,8 @@ import { Payments } from './components/payment/entities/payment.entity';
     }),
     MulterModule.register({
       dest:'./uploads'
-    }),    
+    }),
+    WebhookModule,    
   ],
   controllers: [AppController,ImageController],//imagecontroller
   providers: [AppService,CloudinaryService],//cloudinaryservice
