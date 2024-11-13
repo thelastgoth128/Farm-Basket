@@ -6,15 +6,15 @@ export class Payments {
     @PrimaryGeneratedColumn()
     id : number
 
-    @ManyToOne(()=>Users,user=>user.userid)
+    @ManyToOne(()=>Users,user=>user.payment)
     @JoinColumn({ name : 'userid'})
-    userid : number
+    userid : Users
     
     @Column()
-    Amount : number
+    amount : number
 
-    @Column()
-    reference : string
+    @Column({unique:true})
+    tax_ref : string
 
     @Column({
         type:'enum',
@@ -29,6 +29,9 @@ export class Payments {
     @Column()
     currency : string
 
+    @Column()
+    charges : number
+
     @Column({
         type:'timestamp',
         default:'CURRENT_TIMESTAMPT'
@@ -38,7 +41,7 @@ export class Payments {
 
     @Column({
         type : 'timestamp',
-        default:'CURRENT_TIMESTAMP'
+        nullable : true
     })
-    updated_at : Date
+    complted_at : Date
 }
