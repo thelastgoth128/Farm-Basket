@@ -1,4 +1,5 @@
 import { PaymentStatus } from "src/components/enums/payment.enum";
+import { Products } from "src/components/products/entities/product.entity";
 import { Users } from "src/components/users/entities/user.entity";
 import { Column, JoinColumn, ManyToOne, PrimaryGeneratedColumn } from "typeorm";
 
@@ -6,12 +7,11 @@ export class Payments {
     @PrimaryGeneratedColumn()
     id : number
 
-    @ManyToOne(()=>Users,user=>user.payment)
-    @JoinColumn({ name : 'userid'})
-    userid : Users
+   
     
+
     @Column()
-    amount : number
+    amount : string
 
     @Column({unique:true})
     tax_ref : string
@@ -43,5 +43,5 @@ export class Payments {
         type : 'timestamp',
         nullable : true
     })
-    complted_at : Date
+    completed_at : Date
 }
