@@ -2,6 +2,7 @@ import { Role } from "src/components/enums/role.enums";
 import { AccountStatus } from "src/components/enums/status.enums";
 import { InboxParticipants } from "src/components/messaging/entities/inbox_participants.entity";
 import { Messages } from "src/components/messaging/entities/messaging.entity";
+import { Notifications } from "src/components/notifications/entities/notification.entity";
 import { Payments } from "src/components/payment/entities/payment.entity";
 import { Reports } from "src/components/reports/entities/report.entity";
 import { Column, Entity, OneToMany, PrimaryGeneratedColumn } from "typeorm";
@@ -55,4 +56,7 @@ export class Users {
 
     @OneToMany(()=>Payments,payment=>payment.user)
     payments : Payments[]
+
+    @OneToMany(()=>Notifications,notification=>notification.user)
+    notification : Notifications
 }
