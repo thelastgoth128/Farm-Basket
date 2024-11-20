@@ -130,17 +130,24 @@ export class UsersService {
   }
 
 
-  async remove(@Req() req:Request) {
-    const userid = req.user?.userid
-    const requester = await this.usersrep.findOne({where : {userid}})
+  async remove(@Req() req:Request, @Res() response:Response) {
+    try {
+      const userid = req.user?.userid
+      const requester = await this.usersrep.findOne({where : {userid}})
     
-    if (!requester){
-      throw new NotFoundException('user not found')
-    }
+      if (!requester){
+       throw new NotFoundException('user not found')
+      }
 
-    await this.usersrep.delete(userid)
-    return{
-      message : 'successfully deleted user'
+      await this.usersrep.delete(userid)
+      return response.status(200).json({
+        message : "Successfully deleted Account"
+      })
+      }catch (error) {
+      response.status(500).json({
+        message : "Internal Server Error",
+        error : error.message
+      })
     }
   }
 
