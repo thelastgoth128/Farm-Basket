@@ -39,5 +39,7 @@ export class Products {
     @OneToMany(()=>Reports,report=>report.product)
     reports : Reports[]
     
+    @OneToMany(()=>Products,product => product.id)
+    id : Products[]
 
 }
