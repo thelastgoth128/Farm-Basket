@@ -45,7 +45,7 @@ export class ShopService {
     user: user,
     isread: false,
     created_at: new Date(),
-    text:'You have successfully craeted a shop,Explore our different features in our app.post your firts product in a single click'      
+    text:'You have successfully craeted a shop,Explore our different features in our app.post your first product in a single click'      
     })
     await this.usersService.update({
       ...UpdateUserDto,

@@ -42,7 +42,8 @@ export class MessagingService {
       message.messages = messages;
       message.created_at = new Date();
   
-      return await this.messarep.save(message);
+     const text = await this.messarep.save(message);
+    return text.messages
     }
 
   async createInbox(createInboxDto: CreateInboxDto): Promise<Inbox> {

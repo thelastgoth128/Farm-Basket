@@ -33,7 +33,6 @@ export class Payments {
     @Column({
         type:'timestamp',
         default:'CURRENT_TIMESTAMPT'
-
     })
     created_at : Date
 
@@ -43,10 +42,6 @@ export class Payments {
     })
     completed_at : Date
 
-    @ManyToOne(()=>Products,product=>product.payment) 
-    @JoinColumn({ name: 'product' }) 
-    product : Products 
-    
     @ManyToOne(()=>Users,user=>user.payments) 
     @JoinColumn({ name: 'user' }) 
     user : Users
