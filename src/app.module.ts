@@ -24,6 +24,7 @@ import { ReportsModule } from './components/reports/reports.module';
 import { Reports } from './components/reports/entities/report.entity';
 import { PaymentModule } from './components/payment/payment.module';
 import { Payments } from './components/payment/entities/payment.entity';
+import { CartModule } from './components/cart/cart.module';
 
 @Module({
   imports: [UsersModule,JwtModule,AuthModule, ProductsModule, ShopModule,ImageModule,MessagingModule,ReportsModule,PaymentModule,
@@ -43,7 +44,8 @@ import { Payments } from './components/payment/entities/payment.entity';
     }),
     MulterModule.register({
       dest:'./uploads'
-    }),    
+    }),
+    CartModule,    
   ],
   controllers: [AppController,ImageController],//imagecontroller
   providers: [AppService,CloudinaryService],//cloudinaryservice
