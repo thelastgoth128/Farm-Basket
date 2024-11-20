@@ -10,7 +10,7 @@ import { Roles } from '../decorators/roles.decorators';
 import { Role } from '../enums/role.enums';
 import { AuthGuard } from '../auth/guards/authGuard';
 import { RolesGuard } from '../auth/guards/roles.guard';
-import { ApiOperation, ApiResponse } from '@nestjs/swagger';
+import { ApiOkResponse, ApiOperation, ApiResponse } from '@nestjs/swagger';
 
 @Public()
 @Controller('users')
@@ -32,12 +32,24 @@ export class UsersController {
     return await this.usersService.create(createUserDto,response)
   }
 
+
   @Get('all')
+  @ApiResponse({
+    status: 201,
+    description: "succesfully got all users"
+  })
+  @ApiOperation({summary: "Admin gets all user Accounts"})
+  @ApiOkResponse({})
   findAll() {
     return this.usersService.findAll();
   }
 
   @Get(':id')
+  @ApiResponse({
+    status: 201,
+    description: "succesfully got a user"
+  })
+  @ApiOperation({summary: "Getting a single user by id"})
   findOne(@Param('id') id: string) {
     return this.usersService.findOne(+id);
   }
@@ -64,8 +76,8 @@ export class UsersController {
   }
 
   @Delete('delete')
-  remove(@Req() request:Request) {
-    return this.usersService.remove(request);
+  remove(@Req() request:Request,@Res() response:Response) {
+    return this.usersService.remove(request,response);
   }
 
   @Delete(':userid')

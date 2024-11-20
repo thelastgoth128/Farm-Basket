@@ -3,6 +3,7 @@ import { Role } from "src/components/enums/role.enums";
 import { AccountStatus } from "src/components/enums/status.enums";
 import { InboxParticipants } from "src/components/messaging/entities/inbox_participants.entity";
 import { Messages } from "src/components/messaging/entities/messaging.entity";
+import { Notifications } from "src/components/notifications/entities/notification.entity";
 import { Payments } from "src/components/payment/entities/payment.entity";
 import { Products } from "src/components/products/entities/product.entity";
 import { Reports } from "src/components/reports/entities/report.entity";
@@ -55,10 +56,9 @@ export class Users {
     @OneToMany(()=>Reports,report=>report.reporter)
     reports : Reports[]
 
-    @OneToMany(()=>Payments,payment=>payment.userid)
-    payment : Payments[]
+    @OneToMany(()=>Payments,payment=>payment.user)
+    payments : Payments[]
 
-    @OneToMany(()=>Cart,cart => cart.user)
-    cart : Cart[]
-
+    @OneToMany(()=>Notifications,notification=>notification.user)
+    notification : Notifications
 }
