@@ -44,7 +44,7 @@ export class PaymentService {
   }
 
   async processPayment(createPaymentDto : CreatePaymentDto,@Req() req:Request): Promise<any> {
-    const { amount,mobile,productid } = createPaymentDto
+    const { amount,mobile } = createPaymentDto
     const mobileMoneyOperatorId = this.getMobileMoneyOperatorIds(mobile)
     const charge_id = this.transactionId()
     const name = req.user?.name
@@ -53,13 +53,9 @@ export class PaymentService {
 
     createPaymentDto.tx_ref = this.transactionId()
 
-    const user = await this.usersrep.findOne({where : {userid}})
-    const product = await this.productrep.findOne({where : {productid}})
+    const user = await this.usersrep.findOne({where : {userid}});
 
-    if (!user || !product) {
-      throw new NotFoundException('User or product not found')
-    }
-    
+  
     const payment = new Payments()
       payment.tx_ref = createPaymentDto.tx_ref,
       payment.amount = amount,
@@ -70,7 +66,6 @@ export class PaymentService {
       payment.created_at = new Date(),
       payment.completed_at= null,
       payment.user = user,
-      payment.product = product
     
       await this.paymentrep.save(payment)
 

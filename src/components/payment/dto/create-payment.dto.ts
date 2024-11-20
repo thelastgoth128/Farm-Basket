@@ -25,6 +25,4 @@ export class CreatePaymentDto {
     @IsString()
     name: string
 
-    @IsInt()
-    productid : number
 }
