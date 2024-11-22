@@ -81,17 +81,24 @@ export class ShopService {
     return shop
   }
 
-  async update(shopid: number, updateShopDto: UpdateShopDto) {
+  async update(shopid: number, updateShopDto: UpdateShopDto,res : Response) {
+    try {
     const shop = await this.shoprep.findOne({where : {shopid}})
     
     if(!shop){
       throw new NotFoundException('Shop not found')
     }
-    Object.assign(shop)
+    Object.assign(shop,updateShopDto)
     await this.shoprep.save(shop)
-    return {
-      message : 'succesfully updated shop details'
-    }
+    
+    res.status(200).json({
+      message : "Successfully updated shop details"
+    })
+  }catch(error) {
+    res.status(500).json({
+      message : "Internal Server error", error
+    })
+  }
   }
 
   async remove(shopid: number,@Req() req: Request,@Res() res:Response) {
