@@ -1,5 +1,5 @@
-import { ApiProperty, OmitType } from "@nestjs/swagger";
-import { IsEmail, IsInt, IsOptional, IsString, IsStrongPassword } from "class-validator";
+import { ApiProperty } from "@nestjs/swagger";
+import { IsEmail, IsString, IsStrongPassword } from "class-validator";
 import { Roles } from "src/components/decorators/roles.decorators";
 import { Role } from "src/components/enums/role.enums";
 
@@ -26,7 +26,6 @@ export class CreateUserDto {
    password : string
 
    @ApiProperty({
-    enum:Roles,
     description:"role of a user"
    })
    @IsString()
