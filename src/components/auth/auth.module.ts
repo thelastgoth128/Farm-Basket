@@ -6,10 +6,6 @@ import { AuthService } from "./auth.service";
 import { APP_GUARD } from "@nestjs/core";
 import { AuthGuard } from "./guards/authGuard";
 import { MailService } from "../services.ts/mail.service";
-import { UsersService } from "../users/users.service";
-import { jwtSecret } from "./secrets";
-import { ConfigModule, ConfigService } from "@nestjs/config";
-
 
 @Module({
     imports:[
