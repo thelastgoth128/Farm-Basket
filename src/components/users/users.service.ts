@@ -158,5 +158,15 @@ export class UsersService {
         error : error.message
       })
     }
+
+  }
+    async findOneById(userid: number): Promise<Users> {
+      const user = await this.usersrep.findOne({ where: {userid} });
+      if (!user) {
+        throw new NotFoundException('User  not found');
+      }
+      return user;
+
+
   } 
 }

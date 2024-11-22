@@ -1,11 +1,13 @@
+import { Cart } from "src/components/cart/entities/cart.entity";
 import { Role } from "src/components/enums/role.enums";
 import { AccountStatus } from "src/components/enums/status.enums";
 import { InboxParticipants } from "src/components/messaging/entities/inbox_participants.entity";
 import { Messages } from "src/components/messaging/entities/messaging.entity";
 import { Notifications } from "src/components/notifications/entities/notification.entity";
 import { Payments } from "src/components/payment/entities/payment.entity";
+import { Products } from "src/components/products/entities/product.entity";
 import { Reports } from "src/components/reports/entities/report.entity";
-import { Column, Entity, OneToMany, PrimaryGeneratedColumn } from "typeorm";
+import { Column, Entity, ManyToOne, OneToMany, PrimaryGeneratedColumn } from "typeorm";
 
 
 @Entity()
