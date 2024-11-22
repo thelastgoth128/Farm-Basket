@@ -61,4 +61,7 @@ export class Users {
 
     @OneToMany(()=>Notifications,notification=>notification.user)
     notification : Notifications
+
+    @OneToMany(()=>Cart,cart=>cart.user)
+    cart : Cart
 }

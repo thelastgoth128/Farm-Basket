@@ -1,3 +1,4 @@
+import { Cart } from "src/components/cart/entities/cart.entity";
 import { Payments } from "src/components/payment/entities/payment.entity";
 import { Reports } from "src/components/reports/entities/report.entity";
 import { Shop } from "src/components/shop/entities/shop.entity";
@@ -39,5 +40,9 @@ export class Products {
 
     @OneToMany(()=>Reports,report=>report.product)
     reports : Reports[]
+
+    @OneToMany(()=>Cart,cart=>cart.id)
+    cart : Cart[]
+
 
 }
