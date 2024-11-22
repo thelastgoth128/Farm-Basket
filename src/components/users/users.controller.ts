@@ -10,9 +10,10 @@ import { Roles } from '../decorators/roles.decorators';
 import { Role } from '../enums/role.enums';
 import { AuthGuard } from '../auth/guards/authGuard';
 import { RolesGuard } from '../auth/guards/roles.guard';
-import { ApiOkResponse, ApiOperation, ApiResponse } from '@nestjs/swagger';
+import { ApiOkResponse, ApiOperation, ApiResponse, ApiTags } from '@nestjs/swagger';
 
 @Public()
+@ApiTags('users')
 @Controller('users')
 export class UsersController {
   constructor(private readonly usersService: UsersService) {}
@@ -34,53 +35,78 @@ export class UsersController {
 
 
   @Get('all')
-  @ApiResponse({
-    status: 201,
-    description: "succesfully got all users"
+  @ApiOperation({summary: "Fetch a list of users"})
+  @ApiOkResponse({
+    description: "List of users fetched successfully",
+    type: CreateUserDto,
+    isArray:true
   })
-  @ApiOperation({summary: "Admin gets all user Accounts"})
-  @ApiOkResponse({})
   findAll() {
     return this.usersService.findAll();
   }
 
   @Get(':id')
-  @ApiResponse({
-    status: 201,
-    description: "succesfully got a user"
+  @ApiOperation({summary: "Fetch a specific user"})
+  @ApiOkResponse({
+    description: "user fetched successfully"
   })
-  @ApiOperation({summary: "Getting a single user by id"})
   findOne(@Param('id') id: string) {
     return this.usersService.findOne(+id);
   }
 
   @Patch('update/:id')
+  @ApiOperation({summary: "Update user details"})
+  @ApiOkResponse({
+    description: "Successfully updated a user "
+  })
   update(@Param('id') userid: number, @Body() updateUserDto: UpdateUserDto,@Req()request:Request) {
     return this.usersService.update(updateUserDto,userid,request);
   }
 
 
   @Patch(':userid')
+  @ApiOperation({summary: "Update user details"})
+  @ApiOkResponse({
+    description: "Successfully updated a users role to admin "
+  })
   makeAdmin(@Param('userid',ParseIntPipe) userid: number, @Body() UpdateUserDto: UpdateUserDto){
     return this.usersService.makeAdmin(userid,UpdateUserDto)
   }
 
   @Patch('ban/:userid')
+  @ApiOperation({summary: "Ban a user's account"})
+  @ApiOkResponse({
+    description: "Successfully banned a user "
+  })
   banUser(@Param('userid')userid: number) {
     return this.usersService.banUser(userid)
   }
 
   @Patch('activate/:userid')
+  @ApiOperation({summary: "Activate a user's account"})
+  @ApiOkResponse({
+    description: "Successfully activated a user's account "
+  })
   activateUser(@Param('userid') userid : number) {
     return this.usersService.activateUser(userid)
   }
 
   @Delete('delete')
+  @ApiOperation({summary: "Activate a user's account"})
+  @ApiOkResponse({
+    description: "Successfully activated a user's account "
+  })
   remove(@Req() request:Request,@Res() response:Response) {
     return this.usersService.remove(request,response);
   }
 
   @Delete(':userid')
+  @ApiOperation({
+    summary:"The admin enforces the removal of an account in case that the account is faulty"
+  })
+  @ApiOkResponse({
+    description:"Successfully removed user account"
+  })
   removedByAdmin(@Param('userid') userid : number) {
     return this.usersService.removedByAdmin(userid)
   }

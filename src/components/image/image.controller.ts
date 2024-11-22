@@ -6,6 +6,7 @@ import * as fs from 'fs'
 import * as sharp from "sharp";
 import { ImageService } from "./image.service";
 import { Public } from "../auth/guards/public";
+import { ApiOperation, ApiResponse } from "@nestjs/swagger";
 
 @Public()
 @Controller('images')
@@ -16,6 +17,11 @@ export class ImageController{
     ){}
 
     @Post('upload')
+    @ApiOperation({summary: "Posts a shop image to cloudinary server"})
+    @ApiResponse({
+    status: 201,
+    description: "Successfully posted a shop image to cloudinary"
+  })
     @UseInterceptors(FileInterceptor('image'))
     async uploadFile(@UploadedFile() file: Express.Multer.File,@Body('shopid') shopid:number) {
       try{
@@ -29,6 +35,11 @@ export class ImageController{
     }
 
     @Post('product/image')
+    @ApiOperation({summary: "Posts a product image to cloudinary server"})
+  @ApiResponse({
+    status: 201,
+    description: "Successfully posted a product image"
+  })
     @UseInterceptors(FileInterceptor('image'))
     async uploadImage(@UploadedFile() file: Express.Multer.File,@Body('productid') productid : number) {
       try{
