@@ -11,6 +11,7 @@ import { firstValueFrom } from 'rxjs';
 import { PaymentStatus } from '../enums/payment.enum';
 import { Request } from 'express';
 import { Products } from '../products/entities/product.entity';
+import { CartService } from '../cart/cart.service';
 
 @Injectable()
 export class PaymentService {
@@ -22,6 +23,7 @@ export class PaymentService {
     private httpService : HttpService,
     @InjectRepository(Products)
     private readonly productrep : Repository<Products>,
+    private readonly cartService : CartService
 
   ){}
 
@@ -50,10 +52,18 @@ export class PaymentService {
     const name = req.user?.name
     const email = req.user?.email
     const userid = req.user?.userid
+    const cart = await this.cartService.findOrCreateCart(userid)
 
     createPaymentDto.tx_ref = this.transactionId()
 
     const user = await this.usersrep.findOne({where : {userid}});
+    if (!user) {
+      throw new NotFoundException('user not found')
+    }
+
+    if(!cart) {
+      throw new NotFoundException('cart not found')
+    }
 
   
     const payment = new Payments()
@@ -66,8 +76,9 @@ export class PaymentService {
       payment.created_at = new Date(),
       payment.completed_at= null,
       payment.user = user,
+      payment.cart = cart
     
-      await this.paymentrep.save(payment)
+      try { console.log('Saving payment entity:', payment); await this.paymentrep.save(payment); console.log('Payment saved successfully'); } catch (error) { console.error('Error saving payment:', error); throw new HttpException('Error saving payment', HttpStatus.INTERNAL_SERVER_ERROR); }
 
     const options = {
       headers: {
@@ -236,6 +247,10 @@ export class PaymentService {
       console.error('Error initiating payout:', error.response?.data || error.message);
       throw new HttpException('An error occurred while processing payout.', HttpStatus.INTERNAL_SERVER_ERROR);
     }
+  }
+
+  async findAll(){
+    return await this.paymentrep.find()
   }
 
 }
