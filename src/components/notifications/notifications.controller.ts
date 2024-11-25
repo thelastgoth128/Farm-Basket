@@ -1,4 +1,4 @@
-import { Controller, Get, Post, Body, Patch, Param, Delete, Req } from '@nestjs/common';
+import { Controller, Get, Post, Body, Patch, Param, Delete, Req, ParseIntPipe } from '@nestjs/common';
 import { NotificationsService } from './notifications.service';
 import { CreateNotificationDto } from './dto/create-notification.dto';
 import { UpdateNotificationDto } from './dto/update-notification.dto';
@@ -35,8 +35,8 @@ export class NotificationsController {
   @ApiOkResponse({
     description: "Successfully fetched a notification for a user"
   })
-  findOne(@Param('id') id: string) {
-    return this.notificationsService.findOne(+id);
+  findOne(@Param('id',ParseIntPipe) id: number) {
+    return this.notificationsService.findOne(id);
   }
 
   @Patch('update/:id')
@@ -44,8 +44,8 @@ export class NotificationsController {
   @ApiOkResponse({
     description: "Successfully updated a notification message"
   })
-  update(@Param('id') id: string, @Body() updateNotificationDto: UpdateNotificationDto) {
-    return this.notificationsService.update(+id, updateNotificationDto);
+  update(@Param('id',ParseIntPipe) id: number, @Body() updateNotificationDto: UpdateNotificationDto) {
+    return this.notificationsService.update(id, updateNotificationDto);
   }
 
   @Delete('delete/:id')
@@ -53,7 +53,7 @@ export class NotificationsController {
   @ApiOkResponse({
     description: "Successfully deleted a notification"
   })
-  remove(@Param('id') id: string) {
-    return this.notificationsService.remove(+id);
+  remove(@Param('id',ParseIntPipe) id: number) {
+    return this.notificationsService.remove(id);
   }
 }
