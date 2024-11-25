@@ -25,4 +25,7 @@ export class CreatePaymentDto {
     @IsString()
     name: string
 
+    @IsInt()
+    cart : number
+
 }
