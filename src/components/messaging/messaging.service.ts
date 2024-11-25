@@ -42,8 +42,13 @@ export class MessagingService {
       message.messages = messages;
       message.created_at = new Date();
   
-     const text = await this.messarep.save(message);
-    return text.messages
+      try { 
+        const text = await this.messarep.save(message); 
+        return text.messages; 
+      } catch (error) { 
+        console.error('Error saving message:', error);
+         throw new Error('Could not save message');
+      } 
     }
 
   async createInbox(createInboxDto: CreateInboxDto): Promise<Inbox> {
