@@ -55,7 +55,11 @@ export class ProductsService {
     return product;
   }
 
-  async findShopProduct(shopid : number) {
+  async findByType(type: string) {
+    return this.productsRepository.find({where: { type }})
+  }
+
+  async findShopProduct(shopid: number) {
    const shop = await this.productsRepository.find({where : {shop:{shopid : shopid}},relations:['shop']})
 
    if (!shop) {
