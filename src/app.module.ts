@@ -30,6 +30,7 @@ import { NotificationsModule } from './components/notifications/notifications.mo
 import { Notifications } from './components/notifications/entities/notification.entity';
 import { CartModule } from './components/cart/cart.module';
 import { Cart, CartItem } from './components/cart/entities/cart.entity';
+import { OrdersModule } from './components/orders/orders.module';
 
 @Module({
   imports: [UsersModule,JwtModule,AuthModule, ProductsModule, ShopModule,ImageModule,MessagingModule,ReportsModule,PaymentModule,WebhookModule, NotificationsModule,CartModule, 
@@ -49,7 +50,8 @@ import { Cart, CartItem } from './components/cart/entities/cart.entity';
     }),
     MulterModule.register({
       dest:'./uploads'
-    }), 
+    }),
+    OrdersModule, 
   ],
   controllers: [AppController,ImageController],
   providers: [AppService,CloudinaryService],
