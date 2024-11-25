@@ -8,10 +8,11 @@ import { HttpModule } from '@nestjs/axios';
 import { ProductsModule } from '../products/products.module';
 import { CartModule } from '../cart/cart.module';
 import { CartService } from '../cart/cart.service';
+import { OrdersModule } from '../orders/orders.module';
 
 @Module({
   imports:[
-    TypeOrmModule.forFeature([Payments]),UsersModule,HttpModule,ProductsModule,CartModule
+    TypeOrmModule.forFeature([Payments]),UsersModule,HttpModule,ProductsModule,CartModule,OrdersModule
   ],
   controllers: [PaymentController],
   providers: [PaymentService,CartService],
