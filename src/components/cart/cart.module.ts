@@ -7,13 +7,14 @@ import { UsersModule } from '../users/users.module';
 import { UsersService } from '../users/users.service';
 import { ProductsModule } from '../products/products.module';
 import { ShopModule } from '../shop/shop.module';
+import { PaymentModule } from '../payment/payment.module';
 
 @Module({
   imports:[
-    TypeOrmModule.forFeature([Cart,CartItem]),UsersModule,ProductsModule,ShopModule
+    TypeOrmModule.forFeature([Cart,CartItem]),UsersModule,ProductsModule,ShopModule,
   ],
   providers: [CartService,UsersService],
   controllers: [CartController],
-  exports: [TypeOrmModule]
+  exports: [TypeOrmModule,CartService]
 })
 export class CartModule {}
