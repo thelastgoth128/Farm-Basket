@@ -20,7 +20,7 @@ export class CartService {
   ) {}
 
   async findOrCreateCart(userId: number): Promise<Cart> {
-    let cart = await this.cartRepository.findOne({ where: { user: { userid: userId } }, relations: ['items', 'items.product'] });
+    let cart = await this.cartRepository.findOne({ where: { user: { userid: userId } }, relations: ['items.product'] });
     if (!cart) {
       const user = await this.usersService.findOneById(userId);
       if (!user) {
