@@ -1,6 +1,7 @@
-import { Entity, Column, PrimaryGeneratedColumn, ManyToOne, OneToMany, JoinColumn } from 'typeorm';
+import { Entity, Column, PrimaryGeneratedColumn, ManyToOne, OneToMany, JoinColumn, OneToOne } from 'typeorm';
 import { Users } from 'src/components/users/entities/user.entity';
 import { Products } from 'src/components/products/entities/product.entity';
+import { Payments } from 'src/components/payment/entities/payment.entity';
 
 @Entity()
 export class Cart {
@@ -13,6 +14,9 @@ export class Cart {
 
   @OneToMany(() => CartItem, cartItem => cartItem.cart, { cascade: true })
   items: CartItem[];
+
+  @OneToOne(()=>Payments,payment=>payment.cart)
+  payment : Payments
 }
 
 @Entity()
