@@ -47,7 +47,7 @@ export class AuthService{
             await this.mailService.sendPasswordResetEmail(email, reset_token)
         }
         return{
-            message : 'is this user exists, they will receive an email'
+            message : 'if this user exists, they will receive an email'
         }
     }
 
