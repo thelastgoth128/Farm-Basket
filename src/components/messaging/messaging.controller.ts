@@ -13,15 +13,6 @@ import { ApiOkResponse, ApiOperation, ApiResponse, ApiTags } from '@nestjs/swagg
 export class MessagingController {
   constructor(private readonly messagingService: MessagingService) {}
 
-  @Post('send')
-  @ApiOperation({summary: "Create a message"})
-  @ApiResponse({
-    status: 200,
-    description: "Successfully created a message"
-  })
-  async create(@Body() createMessageDto: CreateMessagingDto) {
-    return await this.messagingService.create(createMessageDto)
-  }
 
   @Post('inbox')
   @ApiOperation({summary: "Creates an Inbox and adds Partcipants to the participants table"})
