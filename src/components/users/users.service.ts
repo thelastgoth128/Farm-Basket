@@ -40,7 +40,8 @@ export class UsersService {
         secret:process.env.JWT_SECRET
       })
       return{
-        access_token : jwt
+        access_token : jwt,
+        data : payload
       }     
   }
 
@@ -51,9 +52,7 @@ export class UsersService {
   }
 
   async findMail(email : string):Promise<Users | undefined>{
-    return await this.usersrep.findOne({where : {email},select: [
-      'userid','email','cart','inboxparticipants','location','status','role','payments','message','name','notification','order','reports',
-    ]})
+    return await this.usersrep.findOne({where : {email}})
   }
 
   async findOne(userid: number) : Promise <Users> {
