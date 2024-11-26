@@ -24,6 +24,8 @@ import { ReportsModule } from './components/reports/reports.module';
 import { Reports } from './components/reports/entities/report.entity';
 import { PaymentModule } from './components/payment/payment.module';
 import { Payments } from './components/payment/entities/payment.entity';
+import { ReportsController } from './components/statistics/reports/reports.controller';
+import { ReviewsModule } from './reviews/reviews.module';
 
 @Module({
   imports: [UsersModule,JwtModule,AuthModule, ProductsModule, ShopModule,ImageModule,MessagingModule,ReportsModule,PaymentModule,
@@ -43,9 +45,10 @@ import { Payments } from './components/payment/entities/payment.entity';
     }),
     MulterModule.register({
       dest:'./uploads'
-    }),    
+    }),
+    ReviewsModule,    
   ],
-  controllers: [AppController,ImageController],//imagecontroller
+  controllers: [AppController,ImageController, ReportsController],//imagecontroller
   providers: [AppService,CloudinaryService],//cloudinaryservice
 })
 export class AppModule implements NestModule {
