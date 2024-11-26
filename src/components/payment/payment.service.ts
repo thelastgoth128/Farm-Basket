@@ -13,6 +13,7 @@ import { Request } from 'express';
 import { Products } from '../products/entities/product.entity';
 import { CartService } from '../cart/cart.service';
 import { Order } from '../orders/entities/order.entity';
+import { NotificationsService } from '../notifications/notifications.service';
 
 @Injectable()
 export class PaymentService {
@@ -27,6 +28,7 @@ export class PaymentService {
     @InjectRepository(Order)
     private readonly orderrep: Repository<Order>,
     private readonly cartService : CartService,
+    private readonly notifyService : NotificationsService,
   ){}
 
   private readonly operatorIds = {
@@ -60,6 +62,13 @@ export class PaymentService {
     order.created_at = payment.created_at
 
     await this.orderrep.save(order)
+    await this.notifyService.create({
+    user: payment.user.userid,
+    isread: false,
+    created_at: new Date(),
+    text:'You have successfully placed an order. Check check the orders section to confirm.'      
+    
+    })
     return order
   }
 
