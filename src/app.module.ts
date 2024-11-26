@@ -24,7 +24,6 @@ import { ReportsModule } from './components/reports/reports.module';
 import { Reports } from './components/reports/entities/report.entity';
 import { PaymentModule } from './components/payment/payment.module';
 import { Payments } from './components/payment/entities/payment.entity';
-import { ReportsController } from './components/statistics/reports/reports.controller';
 import { ReviewsModule } from './reviews/reviews.module';
 
 @Module({
@@ -48,7 +47,7 @@ import { ReviewsModule } from './reviews/reviews.module';
     }),
     ReviewsModule,    
   ],
-  controllers: [AppController,ImageController, ReportsController],//imagecontroller
+  controllers: [AppController,ImageController],//imagecontroller
   providers: [AppService,CloudinaryService],//cloudinaryservice
 })
 export class AppModule implements NestModule {
