@@ -7,7 +7,9 @@ import { Notifications } from "src/components/notifications/entities/notificatio
 import { Payments } from "src/components/payment/entities/payment.entity";
 import { Products } from "src/components/products/entities/product.entity";
 import { Reports } from "src/components/reports/entities/report.entity";
-import { Column, Entity, ManyToOne, OneToMany, PrimaryGeneratedColumn } from "typeorm";
+import { Review } from "src/reviews/entities/review.entity";
+import { Column, Entity, OneToMany,ManyToOne , PrimaryGeneratedColumn } from "typeorm";
+
 
 
 @Entity()
@@ -55,6 +57,13 @@ export class Users {
 
     @OneToMany(()=>Reports,report=>report.reporter)
     reports : Reports[]
+
+    @OneToMany(()=>Payments,payment=>payment.user)
+    payment : Payments[]
+    
+    @OneToMany(()=> Review, review => review.user )
+    reviews : Review[]
+
 
     @OneToMany(()=>Payments,payment=>payment.user)
     payments : Payments[]
