@@ -1,4 +1,4 @@
-import { Injectable } from '@nestjs/common';
+import { Injectable, NotFoundException } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { In, Repository } from 'typeorm';
 import { Users } from '../users/entities/user.entity';
@@ -42,7 +42,13 @@ export class MessagingService {
       message.messages = messages;
       message.created_at = new Date();
   
-      return await this.messarep.save(message);
+      try { 
+        const text = await this.messarep.save(message); 
+        return text.messages; 
+      } catch (error) { 
+        console.error('Error saving message:', error);
+         throw new Error('Could not save message');
+      } 
     }
 
   async createInbox(createInboxDto: CreateInboxDto): Promise<Inbox> {
@@ -72,7 +78,7 @@ export class MessagingService {
 
   async getInboxName(inboxId: number, userId: number): Promise<string> {
     const participants = await this.inboxPartRep.find({
-      where: { inbox: { inboxid: inboxId } }, // Correctly reference the inbox
+      where: { inbox: { inboxid: inboxId } },
       relations: ['userid']
     });
 
@@ -80,12 +86,21 @@ export class MessagingService {
     return otherParticipants.map(participant => participant.userid.name).join(', ');
   }
 
-  findOne(id: number) {
-    return `This action returns a #${id} messaging`;
+  async findOne(id: number) {
+    return await this.findOne(id)
   }
 
-  update(id: number, updateMessagingDto: UpdateMessagingDto) {
-    return `This action updates a #${id} messaging`;
+  async update(id: number, updateMessagingDto: UpdateMessagingDto) {
+   const message = await this.messarep.findOne({where : {id}})
+
+   if (!message) {
+    throw new NotFoundException("message not dound")
+   }
+
+   Object.assign(message,updateMessagingDto)  
+
+   const updated = await this.messarep.save(message)
+   return updated.messages
   }
 
   remove(id: number) {

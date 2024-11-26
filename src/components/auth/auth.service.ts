@@ -30,11 +30,9 @@ export class AuthService{
             throw new BadRequestException('wrong credentials')
         }
         const payload = {userid : user.userid, email: user.email, name:user.name, role: user.role, location: user.location}
-        const jwt = await this.jwtService.signAsync(payload)
-        response.cookie('jwt',jwt,{httpOnly:true,secure:true,maxAge:360000})
-
+        const jwt = await this.jwtService.signAsync(payload, {secret:process.env.JWT_SECRET})
         return { 
-            message : 'succesfully logged in' 
+            access_token : jwt
         }
     }
 
@@ -49,7 +47,7 @@ export class AuthService{
             await this.mailService.sendPasswordResetEmail(email, reset_token)
         }
         return{
-            message : 'is this user exists, they will receive an email'
+            message : 'if this user exists, they will receive an email'
         }
     }
 

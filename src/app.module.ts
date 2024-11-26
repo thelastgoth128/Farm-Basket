@@ -24,10 +24,16 @@ import { ReportsModule } from './components/reports/reports.module';
 import { Reports } from './components/reports/entities/report.entity';
 import { PaymentModule } from './components/payment/payment.module';
 import { Payments } from './components/payment/entities/payment.entity';
+import { WebhookModule } from './components/webhook/webhook.module';
+import { Webhook } from './components/webhook/entities/webhook.entity';
+import { NotificationsModule } from './components/notifications/notifications.module';
+import { Notifications } from './components/notifications/entities/notification.entity';
+import { CartModule } from './components/cart/cart.module';
+import { Cart, CartItem } from './components/cart/entities/cart.entity';
 import { ReviewsModule } from './reviews/reviews.module';
 
 @Module({
-  imports: [UsersModule,JwtModule,AuthModule, ProductsModule, ShopModule,ImageModule,MessagingModule,ReportsModule,PaymentModule,
+  imports: [UsersModule,JwtModule,AuthModule, ProductsModule, ShopModule,ImageModule,MessagingModule,ReportsModule,PaymentModule,WebhookModule, NotificationsModule,CartModule, 
     ConfigModule.forRoot({
       isGlobal:true,
       envFilePath: ".env"
@@ -37,18 +43,19 @@ import { ReviewsModule } from './reviews/reviews.module';
       useFactory:async (configService : ConfigService)=>({
         type:'postgres',
         url:configService.get<string>('DATABASE_URL'),
-        entities:[Users,Products,Shop,Inbox,Messages,InboxParticipants,Reports,Payments],
+        entities:[Users,Products,Shop,Inbox,Messages,InboxParticipants,Reports,Payments,Webhook,Notifications,Cart,CartItem],
         synchronize: false,
       }),
       inject:[ConfigService]
     }),
     MulterModule.register({
       dest:'./uploads'
+    }), 
     }),
     ReviewsModule,    
   ],
-  controllers: [AppController,ImageController],//imagecontroller
-  providers: [AppService,CloudinaryService],//cloudinaryservice
+  controllers: [AppController,ImageController],
+  providers: [AppService,CloudinaryService],
 })
 export class AppModule implements NestModule {
   configure(consumer: MiddlewareConsumer) {

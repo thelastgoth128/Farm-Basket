@@ -10,6 +10,7 @@ import { UsersService } from '../users/users.service';
 import { UpdateUserDto } from '../users/dto/update-user.dto';
 import { Role } from '../enums/role.enums';
 import { MailService } from '../services.ts/mail.service';
+import { NotificationsService } from '../notifications/notifications.service';
 
 @Injectable()
 export class ShopService {
@@ -20,7 +21,8 @@ export class ShopService {
     private readonly usersrep : Repository<Users>,
     @Inject()
     private usersService : UsersService,
-    private mailService : MailService
+    private mailService : MailService,
+    private readonly notify : NotificationsService,
   ){}
 
   async create(createShopDto: CreateShopDto,@Req() req:Request,@Res() res:Response) {
@@ -39,13 +41,19 @@ export class ShopService {
     });
 
     await this.shoprep.save(shop)
+    await this.notify.create({
+    user: user,
+    isread: false,
+    created_at: new Date(),
+    text:'You have successfully craeted a shop,Explore our different features in our app.post your first product in a single click'      
+    })
     await this.usersService.update({
       ...UpdateUserDto,
       role : Role.SELLER
      },
      user,
       req
-     )
+    )
     await this.mailService.sendShopCreatedEmail(ShopOwner.email,ShopOwner.name,createShopDto.name)
     
     res.setHeader('Role',Role.SELLER)
@@ -73,17 +81,24 @@ export class ShopService {
     return shop
   }
 
-  async update(shopid: number, updateShopDto: UpdateShopDto) {
+  async update(shopid: number, updateShopDto: UpdateShopDto,res : Response) {
+    try {
     const shop = await this.shoprep.findOne({where : {shopid}})
     
     if(!shop){
       throw new NotFoundException('Shop not found')
     }
-    Object.assign(shop)
+    Object.assign(shop,updateShopDto)
     await this.shoprep.save(shop)
-    return {
-      message : 'succesfully updated shop details'
-    }
+    
+    res.status(200).json({
+      message : "Successfully updated shop details"
+    })
+  }catch(error) {
+    res.status(500).json({
+      message : "Internal Server error", error
+    })
+  }
   }
 
   async remove(shopid: number,@Req() req: Request,@Res() res:Response) {

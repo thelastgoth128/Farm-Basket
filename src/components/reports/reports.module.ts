@@ -12,5 +12,6 @@ import { ProductsModule } from '../products/products.module';
   ],
   controllers: [ReportsController],
   providers: [ReportsService],
+  exports:[TypeOrmModule]
 })
 export class ReportsModule {}

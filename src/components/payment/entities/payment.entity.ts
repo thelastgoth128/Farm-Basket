@@ -1,20 +1,19 @@
+import { Cart } from "src/components/cart/entities/cart.entity";
 import { PaymentStatus } from "src/components/enums/payment.enum";
+import { Products } from "src/components/products/entities/product.entity";
 import { Users } from "src/components/users/entities/user.entity";
-import { Column, JoinColumn, ManyToOne, PrimaryGeneratedColumn } from "typeorm";
+import { Column, Entity, JoinColumn, ManyToOne, OneToMany, OneToOne, PrimaryGeneratedColumn } from "typeorm";
 
+@Entity()
 export class Payments {
     @PrimaryGeneratedColumn()
     id : number
 
-    @ManyToOne(()=>Users,user=>user.payment)
-    @JoinColumn({ name : 'userid'})
-    userid : Users
-    
     @Column()
-    amount : number
+    amount : string
 
     @Column({unique:true})
-    tax_ref : string
+    tx_ref : string
 
     @Column({
         type:'enum',
@@ -24,7 +23,7 @@ export class Payments {
     status : PaymentStatus
 
     @Column()
-    mobile : number
+    mobile : string
 
     @Column()
     currency : string
@@ -34,8 +33,7 @@ export class Payments {
 
     @Column({
         type:'timestamp',
-        default:'CURRENT_TIMESTAMPT'
-
+        default:'CURRENT_TIMESTAMP'
     })
     created_at : Date
 
@@ -43,5 +41,16 @@ export class Payments {
         type : 'timestamp',
         nullable : true
     })
-    complted_at : Date
+    completed_at : Date
+
+    @ManyToOne(()=>Users,user=>user.payments) 
+    @JoinColumn({ name: 'user' }) 
+    user : Users
+
+    @OneToOne(()=>Cart,cart=>cart.payment)
+    @JoinColumn({name : 'cart'})
+    cart : Cart
+
+  
+
 }

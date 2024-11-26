@@ -6,12 +6,14 @@ import { Inbox } from './entities/inbox.entity';
 import { Messages } from './entities/messaging.entity';
 import { InboxParticipants } from './entities/inbox_participants.entity';
 import { UsersModule } from '../users/users.module';
+import { MessagingGateway } from './gateway';
 
 @Module({
   imports : [
     TypeOrmModule.forFeature([Inbox,Messages,InboxParticipants]),UsersModule
   ],
   controllers: [MessagingController],
-  providers: [MessagingService],
+  providers: [MessagingService,MessagingGateway],
+  exports:[TypeOrmModule]
 })
 export class MessagingModule {}

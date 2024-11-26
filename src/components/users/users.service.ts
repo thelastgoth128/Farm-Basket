@@ -16,39 +16,32 @@ export class UsersService {
     @InjectRepository(Users)
     private readonly usersrep : Repository<Users>,
     private  jwtService : JwtService,
-    private mailService : MailService,
   ){}
 
   async create(createUserDto: CreateUserDto,@Res({passthrough:true}) response:Response) {
-    const { email,name } = createUserDto;
+      const { email,name } = createUserDto;
 
-    const exists = await this.usersrep.findOne({where: {email}})
-    if(exists){
-      throw new ForbiddenException('email already exists, please login')
-    }
-    createUserDto.role= Role.BUYER
-    const user = await this.usersrep.save(createUserDto)
+      const exists = await this.usersrep.findOne({where: {email}})
+      if(exists){
+        throw new ForbiddenException('email already exists, please login')
+      }
+      createUserDto.role= Role.BUYER
+      const user = await this.usersrep.save(createUserDto)
 
-    const payload = {
-      userid : user.userid,
-      email : user.email,
-      name : user.name,
-      role : user.role,
-      status : user.status,
-      location : user.location
-    }
-    const jwt = await this.jwtService.signAsync(payload, {
-      secret:process.env.JWT_SECRET
-    })
-    response.cookie('jwt',jwt,{
-      httpOnly: true,
-      secure:true,
-      maxAge:86400000,
-    })
-    await this.mailService.sendCreateAccountEmail(email,name)
-    response.status(201).json({
-      message:'Successfully Created Account'
-    })
+      const payload = {
+        userid : user.userid,
+        email : user.email,
+        name : user.name,
+        role : user.role,
+        status : user.status,
+        location : user.location
+      }
+      const jwt = await this.jwtService.signAsync(payload, {
+        secret:process.env.JWT_SECRET
+      })
+      return{
+        access_token : jwt
+      }     
   }
 
   async findOneById(userid: number): Promise<Users | null> {
@@ -72,7 +65,7 @@ export class UsersService {
     return user.status
   }
 
-  async update(updateUserDto: UpdateUserDto,userid : number,@Req() req:Request) {
+  async update(updateUserDto: UpdateUserDto,userid : number,@Req() req:Request): Promise<Users> {
     const user = req.user?.userid
     const requester = await this.usersrep.findOne({where : {userid:user}})
     const account = await this.usersrep.findOne({where : {userid}})
@@ -91,11 +84,8 @@ export class UsersService {
     }
     Object.assign(requester,updateUserDto)
 
-    await this.usersrep.save(requester)
+  return  await this.usersrep.save(requester)
 
-    return{
-      message : 'successfully updated'
-    }
   }
 
   async deactiveUser(userid : number) : Promise<void> {
@@ -110,16 +100,14 @@ export class UsersService {
     await this.usersrep.update(userid, {status : AccountStatus.ACTIVE})
   }
   
-  async makeAdmin(userid,updateUserDto : UpdateUserDto){
+  async makeAdmin(userid,updateUserDto : UpdateUserDto): Promise<Users> {
     const newAdmin = await this.usersrep.findOne({where : {userid}})
     if (!newAdmin){
       throw new NotFoundException('user not found')
     }
     Object.assign(newAdmin,updateUserDto)
     await this.usersrep.save(newAdmin)
-    return {
-      message : 'Successfully added an Admin'
-    }
+    return newAdmin
 
   }
 
@@ -134,17 +122,24 @@ export class UsersService {
   }
 
 
-  async remove(@Req() req:Request) {
-    const userid = req.user?.userid
-    const requester = await this.usersrep.findOne({where : {userid}})
+  async remove(@Req() req:Request, @Res() response:Response) {
+    try {
+      const userid = req.user?.userid
+      const requester = await this.usersrep.findOne({where : {userid}})
     
-    if (!requester){
-      throw new NotFoundException('user not found')
-    }
+      if (!requester){
+       throw new NotFoundException('user not found')
+      }
 
-    await this.usersrep.delete(userid)
-    return{
-      message : 'successfully deleted user'
+      await this.usersrep.delete(userid)
+      return response.status(200).json({
+        message : "Successfully deleted Account"
+      })
+      }catch (error) {
+      response.status(500).json({
+        message : "Internal Server Error",
+        error : error.message
+      })
     }
   }
 
@@ -157,7 +152,7 @@ export class UsersService {
       }
       await this.usersrep.delete(userid)
 
-      return response.status(201).json({
+      return response.status(200).json({
         message : "Succesfully deleted user Account"
       })
     }catch (error) {
@@ -166,5 +161,15 @@ export class UsersService {
         error : error.message
       })
     }
+
+  }
+    async findOneById(userid: number): Promise<Users> {
+      const user = await this.usersrep.findOne({ where: {userid} });
+      if (!user) {
+        throw new NotFoundException('User  not found');
+      }
+      return user;
+
+
   } 
 }
