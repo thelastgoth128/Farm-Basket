@@ -51,7 +51,6 @@ import { ReviewsModule } from './reviews/reviews.module';
     MulterModule.register({
       dest:'./uploads'
     }), 
-    }),
     ReviewsModule,    
   ],
   controllers: [AppController,ImageController],
