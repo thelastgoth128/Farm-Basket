@@ -4,6 +4,7 @@ import { InboxParticipants } from "src/components/messaging/entities/inbox_parti
 import { Messages } from "src/components/messaging/entities/messaging.entity";
 import { Payments } from "src/components/payment/entities/payment.entity";
 import { Reports } from "src/components/reports/entities/report.entity";
+import { Review } from "src/reviews/entities/review.entity";
 import { Column, Entity, OneToMany, PrimaryGeneratedColumn } from "typeorm";
 
 
@@ -55,4 +56,9 @@ export class Users {
 
     @OneToMany(()=>Payments,payment=>payment.userid)
     payment : Payments[]
+    
+    @OneToMany(()=> Review, review => review.user )
+    reviews : Review[]
+
+
 }
