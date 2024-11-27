@@ -61,6 +61,12 @@ export class ProductsService {
      }})
   }
 
+  async findByName(name: string) {
+    return this.productsRepository.find({where : {
+      name : ILike(`%${name}`)
+    }})
+  }
+
   async findShopProduct(shopid: number) {
    const shop = await this.productsRepository.find({where : {shop:{shopid : shopid}},relations:['shop']})
 
