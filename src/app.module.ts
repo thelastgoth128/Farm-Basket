@@ -30,10 +30,14 @@ import { NotificationsModule } from './components/notifications/notifications.mo
 import { Notifications } from './components/notifications/entities/notification.entity';
 import { CartModule } from './components/cart/cart.module';
 import { Cart, CartItem } from './components/cart/entities/cart.entity';
+import { Order } from './components/orders/entities/order.entity';
+import { OrdersModule } from './components/orders/orders.module';
+import { ReviewsModule } from './reviews/reviews.module';
+import { Review } from './reviews/entities/review.entity';
 
 
 @Module({
-  imports: [UsersModule,JwtModule,AuthModule, ProductsModule, ShopModule,ImageModule,MessagingModule,ReportsModule,PaymentModule,WebhookModule, NotificationsModule,CartModule,OrdersModule,
+  imports: [UsersModule,JwtModule,AuthModule, ProductsModule, ShopModule,ImageModule,MessagingModule,ReportsModule,PaymentModule,WebhookModule, NotificationsModule,CartModule,OrdersModule,ReviewsModule,
     ConfigModule.forRoot({
       isGlobal:true,
       envFilePath: ".env"
@@ -43,15 +47,14 @@ import { Cart, CartItem } from './components/cart/entities/cart.entity';
       useFactory:async (configService : ConfigService)=>({
         type:'postgres',
         url:configService.get<string>('DATABASE_URL'),
-        entities:[Users,Products,Shop,Inbox,Messages,InboxParticipants,Reports,Payments,Webhook,Notifications,Cart,CartItem,Order],
+        entities:[Users,Products,Shop,Inbox,Messages,InboxParticipants,Reports,Payments,Webhook,Notifications,Cart,CartItem,Order,Review],
         synchronize: false,
       }),
       inject:[ConfigService]
     }),
     MulterModule.register({
       dest:'./uploads'
-    }), 
-    ReviewsModule,    
+    }),   
   ],
   controllers: [AppController,ImageController],
   providers: [AppService,CloudinaryService],
