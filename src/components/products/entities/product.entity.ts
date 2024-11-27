@@ -3,6 +3,7 @@ import { Payments } from "src/components/payment/entities/payment.entity";
 import { Reports } from "src/components/reports/entities/report.entity";
 import { Shop } from "src/components/shop/entities/shop.entity";
 import { Users } from "src/components/users/entities/user.entity";
+import { Review } from "src/reviews/entities/review.entity";
 import { Column, Entity, JoinColumn, ManyToOne, OneToMany, PrimaryGeneratedColumn } from "typeorm";
 
 @Entity()
@@ -44,5 +45,8 @@ export class Products {
     @OneToMany(()=>Cart,cart=>cart.id)
     cart : Cart[]
 
+    
+    @OneToMany(() => Review, review => review.product)
+    reviews: Review[]
 
 }
