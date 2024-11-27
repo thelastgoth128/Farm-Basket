@@ -40,12 +40,15 @@ export class UsersService {
         secret:process.env.JWT_SECRET
       })
       return{
-        access_token : jwt
+        access_token : jwt,
+        data : payload
       }     
   }
 
   async findAll() : Promise <Users[]> {
-    return await this.usersrep.find() 
+    return await this.usersrep.find({select: [
+      'userid','email','cart','inboxparticipants','location','status','role','payments','message','name','notification','order','reports',
+    ]}) 
   }
 
   async findMail(email : string):Promise<Users | undefined>{
@@ -53,11 +56,15 @@ export class UsersService {
   }
 
   async findOne(userid: number) : Promise <Users> {
-    return await this.usersrep.findOne({where : {userid}})
+    return await this.usersrep.findOne({where : {userid},select:[
+      'userid','email','cart','inboxparticipants','location','status','role','payments','message','name','notification','order','reports',
+    ]})
   }
 
   async getUserStatus(userid : number){
-    const user = await this.usersrep.findOne({where : {userid}})
+    const user = await this.usersrep.findOne({where : {userid},select:[
+      'userid','email','cart','inboxparticipants','location','status','role','payments','message','name','notification','order','reports',
+    ]})
     return user.status
   }
 

@@ -1,9 +1,10 @@
-import { Controller, Get, Post, Body, Patch, Param, Delete } from '@nestjs/common';
+import { Controller, Get, Post, Body, Patch, Param, Delete, ParseIntPipe, Query } from '@nestjs/common';
 import { ProductsService } from './products.service';
 import { CreateProductDto } from './dto/create-product.dto';
 import { UpdateProductDto } from './dto/update-product.dto';
 import { Public } from '../auth/guards/public';
 import { ApiOkResponse, ApiOperation, ApiResponse } from '@nestjs/swagger';
+import { Products } from './entities/product.entity';
 
 @Public()
 @Controller('products')
@@ -29,12 +30,17 @@ export class ProductsController {
     return this.productsService.findAllProducts();
   }
 
+  @Get('search')
+  async searchByTYpe(@Query('type') type:string ): Promise<Products[]>{
+    return await this.productsService.findByType(type)
+  }
+
   @Get(':id')
   @ApiOperation({summary:"fetches a specific product by id"})
   @ApiOkResponse({
     description: "Successfully fetched a product  by id"
   })
-  findProductById(@Param('id') id: number) {
+  findProductById(@Param('id',ParseIntPipe) id: number) {
     return this.productsService.findProductById(id);
   }
 
@@ -43,7 +49,7 @@ export class ProductsController {
   @ApiOkResponse({
     description: "Successfully fetched all products for a particular shop by id"
   })
-  findShopProducts(@Param('shopid') shopid : number){
+  findShopProducts(@Param('shopid',ParseIntPipe) shopid : number){
     return this.productsService.findShopProduct(shopid)
   }
 
@@ -52,7 +58,7 @@ export class ProductsController {
   @ApiOkResponse({
     description: "Successfully updated product's details"
   })
-  updateProduct(@Param('id') id: number, @Body() updateProductDto: UpdateProductDto) {
+  updateProduct(@Param('id',ParseIntPipe) id: number, @Body() updateProductDto: UpdateProductDto) {
     return this.productsService.updateProduct(id, updateProductDto);
   }
 
@@ -61,7 +67,7 @@ export class ProductsController {
   @ApiOkResponse({
     description: "Successfully deleted a product"
   })
-  removeProduct(@Param('id') id: number) {
+  removeProduct(@Param('id',ParseIntPipe) id: number) {
     return this.productsService.removeProduct(id);
   }
 }

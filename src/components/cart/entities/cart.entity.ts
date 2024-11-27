@@ -2,6 +2,7 @@ import { Entity, Column, PrimaryGeneratedColumn, ManyToOne, OneToMany, JoinColum
 import { Users } from 'src/components/users/entities/user.entity';
 import { Products } from 'src/components/products/entities/product.entity';
 import { Payments } from 'src/components/payment/entities/payment.entity';
+import { Order } from 'src/components/orders/entities/order.entity';
 
 @Entity()
 export class Cart {
@@ -17,6 +18,9 @@ export class Cart {
 
   @OneToOne(()=>Payments,payment=>payment.cart)
   payment : Payments
+
+  @OneToOne(()=>Order,order=>order.cart)
+  order:Order
 }
 
 @Entity()

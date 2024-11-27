@@ -45,7 +45,7 @@ export class ShopService {
     user: user,
     isread: false,
     created_at: new Date(),
-    text:'You have successfully craeted a shop,Explore our different features in our app.post your first product in a single click'      
+    text:'You have successfully created a shop,Explore our different features in our app.post your first product in a single click'      
     })
     await this.usersService.update({
       ...UpdateUserDto,
@@ -57,9 +57,11 @@ export class ShopService {
     await this.mailService.sendShopCreatedEmail(ShopOwner.email,ShopOwner.name,createShopDto.name)
     
     res.setHeader('Role',Role.SELLER)
-    res.status(201).json({
-      message:'You have successfully created a shop',
-    });
+    return{
+      shopid :shop.shopid,
+      owner
+    }
+
   }catch(error){
     res.status(500).json({
       message:'Internal server error',
@@ -69,11 +71,13 @@ export class ShopService {
 }
 
   async findAll() {
-    return await this.shoprep.find({relations:['owner']})
+    return await this.shoprep.find({relations:['owner.name','owner.location','owner.userid']})
   }
 
   async findOne(shpoid : number) {
-    const shop = await this.shoprep.findOne({where : {shopid:shpoid}})
+    const shop = await this.shoprep.findOne({where : {shopid:shpoid},
+      relations:['owner.name','owner.location','owner.userid']
+    })
     
     if(!shop){
       throw new UnauthorizedException('you do not have a shop')

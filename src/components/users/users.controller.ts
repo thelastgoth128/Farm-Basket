@@ -50,8 +50,8 @@ export class UsersController {
   @ApiOkResponse({
     description: "user fetched successfully"
   })
-  findOne(@Param('id') id: string) {
-    return this.usersService.findOne(+id);
+  findOne(@Param('id',ParseIntPipe) id: number) {
+    return this.usersService.findOne(id);
   }
 
   @Patch('update/:id')
@@ -59,7 +59,7 @@ export class UsersController {
   @ApiOkResponse({
     description: "Successfully updated a user "
   })
-  update(@Param('id') userid: number, @Body() updateUserDto: UpdateUserDto,@Req()request:Request) {
+  update(@Param('id', ParseIntPipe) userid: number, @Body() updateUserDto: UpdateUserDto,@Req()request:Request) {
     return this.usersService.update(updateUserDto,userid,request);
   }
 
@@ -78,7 +78,7 @@ export class UsersController {
   @ApiOkResponse({
     description: "Successfully banned a user "
   })
-  banUser(@Param('userid')userid: number) {
+  banUser(@Param('userid',ParseIntPipe)userid: number) {
     return this.usersService.banUser(userid)
   }
 
@@ -87,7 +87,7 @@ export class UsersController {
   @ApiOkResponse({
     description: "Successfully activated a user's account "
   })
-  activateUser(@Param('userid') userid : number) {
+  activateUser(@Param('userid',ParseIntPipe) userid : number) {
     return this.usersService.activateUser(userid)
   }
 
@@ -107,7 +107,7 @@ export class UsersController {
   @ApiOkResponse({
     description:"Successfully removed user account"
   })
-  removedByAdmin(@Param('userid') userid : number) {
+  removedByAdmin(@Param('userid',ParseIntPipe) userid : number) {
     return this.usersService.removedByAdmin(userid)
   }
 }
