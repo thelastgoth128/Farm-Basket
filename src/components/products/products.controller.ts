@@ -35,6 +35,11 @@ export class ProductsController {
     return await this.productsService.findByType(type)
   }
 
+  @Get('name')
+  async searchByName(@Query('name') name : string ): Promise<Products[]> {
+    return await this.productsService.findByName(name)
+  }
+
   @Get(':id')
   @ApiOperation({summary:"fetches a specific product by id"})
   @ApiOkResponse({
