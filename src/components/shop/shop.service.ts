@@ -25,7 +25,7 @@ export class ShopService {
     private readonly notify : NotificationsService,
   ){}
 
-  async create(createShopDto: CreateShopDto,@Req() req:Request,@Res() res:Response) {
+  async create(createShopDto: CreateShopDto,@Req() req:Request, @Res() res:Response) {
     try{
     const { owner, ...shopData } = createShopDto
     const user = req.user?.userid;
@@ -55,12 +55,18 @@ export class ShopService {
       req
     )
     await this.mailService.sendShopCreatedEmail(ShopOwner.email,ShopOwner.name,createShopDto.name)
-    
-    res.setHeader('Role',Role.SELLER)
-    return{
-      shopid :shop.shopid,
-      owner
+    const ownerReponse ={
+      userid : ShopOwner.userid,
+      name : ShopOwner.name,
+      location: ShopOwner.location,
+      
     }
+
+    res.setHeader('Role',Role.SELLER)
+    return res.status(201).json({
+      shopid :shop.shopid,
+      owner : ownerReponse
+    })
 
   }catch(error){
     res.status(500).json({
