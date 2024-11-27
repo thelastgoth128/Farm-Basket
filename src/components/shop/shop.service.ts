@@ -71,12 +71,29 @@ export class ShopService {
 }
 
   async findAll() {
-    return await this.shoprep.find({relations:['owner.name','owner.location','owner.userid']})
+    return await this.shoprep.find({relations:['owner'],
+      select:{
+        owner:{
+          userid: true,
+          name: true,
+          email: true,
+          role: true
+        }
+      }
+    })
   }
 
   async findOne(shpoid : number) {
     const shop = await this.shoprep.findOne({where : {shopid:shpoid},
-      relations:['owner.name','owner.location','owner.userid']
+      relations:['owner'],
+      select:{
+        owner:{
+          userid: true,
+          name: true,
+          email: true,
+          role: true
+        }
+      }
     })
     
     if(!shop){
