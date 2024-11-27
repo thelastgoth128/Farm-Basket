@@ -12,6 +12,8 @@ import { PaymentStatus } from '../enums/payment.enum';
 import { Request } from 'express';
 import { Products } from '../products/entities/product.entity';
 import { CartService } from '../cart/cart.service';
+import { Order } from '../orders/entities/order.entity';
+import { NotificationsService } from '../notifications/notifications.service';
 
 @Injectable()
 export class PaymentService {
@@ -23,8 +25,10 @@ export class PaymentService {
     private httpService : HttpService,
     @InjectRepository(Products)
     private readonly productrep : Repository<Products>,
-    private readonly cartService : CartService
-
+    @InjectRepository(Order)
+    private readonly orderrep: Repository<Order>,
+    private readonly cartService : CartService,
+    private readonly notifyService : NotificationsService,
   ){}
 
   private readonly operatorIds = {
@@ -43,6 +47,29 @@ export class PaymentService {
 
   private transactionId():string {
     return uuidv4()
+  }
+
+  private generateOrderNumber():string {
+    return 'ORD-' + Date.now()
+  }
+
+  async createOrder(payment: Payments): Promise<Order> {
+    const order = new Order()
+    order.order_number =  this.generateOrderNumber()
+    order.user = payment.user
+    order.payment = payment
+    order.cart = payment.cart
+    order.created_at = payment.created_at
+
+    await this.orderrep.save(order)
+    await this.notifyService.create({
+    user: payment.user.userid,
+    isread: false,
+    created_at: new Date(),
+    text:'You have successfully placed an order. Check check the orders section to confirm.'      
+    
+    })
+    return order
   }
 
   async processPayment(createPaymentDto : CreatePaymentDto,@Req() req:Request): Promise<any> {
@@ -78,7 +105,13 @@ export class PaymentService {
       payment.user = user,
       payment.cart = cart
     
-      try { console.log('Saving payment entity:', payment); await this.paymentrep.save(payment); console.log('Payment saved successfully'); } catch (error) { console.error('Error saving payment:', error); throw new HttpException('Error saving payment', HttpStatus.INTERNAL_SERVER_ERROR); }
+      try { 
+        await this.paymentrep.save(payment);
+      }catch (error) { 
+        console.error('Error saving payment:', error); 
+        throw new HttpException('Error saving payment',HttpStatus.INTERNAL_SERVER_ERROR);
+      }
+      await this.createOrder(payment)
 
     const options = {
       headers: {
@@ -112,6 +145,7 @@ export class PaymentService {
         payment.charges = data.data.charges || 0
         payment.completed_at = new Date()
         await this.paymentrep.save(payment)
+        
 
         return {
           statusCode: 200,

@@ -1,4 +1,4 @@
-import { Controller, Post, Body, Get, Param, Query, Patch, Delete } from '@nestjs/common';
+import { Controller, Post, Body, Get, Param, Query, Patch, Delete, ParseIntPipe } from '@nestjs/common';
 import { MessagingService } from './messaging.service';
 import { CreateInboxDto } from './dto/create-inbox.dto';
 import { UpdateMessagingDto } from './dto/update-messaging.dto';
@@ -29,7 +29,7 @@ export class MessagingController {
   @ApiOkResponse({
     description: "Successfully feteched for the names in an inbox"
   })
-  async getInboxName(@Param('id') inboxId: number, @Query('userId') userId: number): Promise<string> {
+  async getInboxName(@Param('id',ParseIntPipe) inboxId: number, @Query('userId') userId: number): Promise<string> {
     return await this.messagingService.getInboxName(inboxId, userId);
   }
 
@@ -47,8 +47,8 @@ export class MessagingController {
   @ApiOkResponse({
     description: "Successfully updated message"
   })
-  update(@Param('id') id: string, @Body() updateMessagingDto: UpdateMessagingDto) {
-    return this.messagingService.update(+id, updateMessagingDto);
+  update(@Param('id',ParseIntPipe) id: number, @Body() updateMessagingDto: UpdateMessagingDto) {
+    return this.messagingService.update(id, updateMessagingDto);
   }
 
   @Delete(':id')
@@ -56,7 +56,7 @@ export class MessagingController {
   @ApiOkResponse({
     description: "Successfully deleted a message"
   })
-  remove(@Param('id') id: string) {
-    return this.messagingService.remove(+id);
+  remove(@Param('id',ParseIntPipe) id: number) {
+    return this.messagingService.remove(id);
   }
 }

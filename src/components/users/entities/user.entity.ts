@@ -4,6 +4,7 @@ import { AccountStatus } from "src/components/enums/status.enums";
 import { InboxParticipants } from "src/components/messaging/entities/inbox_participants.entity";
 import { Messages } from "src/components/messaging/entities/messaging.entity";
 import { Notifications } from "src/components/notifications/entities/notification.entity";
+import { Order } from "src/components/orders/entities/order.entity";
 import { Payments } from "src/components/payment/entities/payment.entity";
 import { Products } from "src/components/products/entities/product.entity";
 import { Reports } from "src/components/reports/entities/report.entity";
@@ -64,4 +65,7 @@ export class Users {
 
     @OneToMany(()=>Cart,cart=>cart.user)
     cart : Cart
+
+    @OneToMany(()=>Order,order=>order.user)
+    order : Order
 }

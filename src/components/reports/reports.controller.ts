@@ -1,4 +1,4 @@
-import { Controller, Get, Post, Body, Patch, Param, Delete, Res, Req } from '@nestjs/common';
+import { Controller, Get, Post, Body, Patch, Param, Delete, Res, Req, ParseIntPipe } from '@nestjs/common';
 import { ReportsService } from './reports.service';
 import { CreateReportDto } from './dto/create-report.dto';
 import { UpdateReportDto } from './dto/update-report.dto';
@@ -36,8 +36,8 @@ export class ReportsController {
   @ApiOkResponse({
     description: "Specific report fetched successfully"
   })
-  findOne(@Param('id') id: string) {
-    return this.reportsService.findOne(+id);
+  findOne(@Param('id',ParseIntPipe) id: number) {
+    return this.reportsService.findOne(id);
   }
 
   @Patch(':id')
@@ -45,8 +45,8 @@ export class ReportsController {
   @ApiOkResponse({
     description: "Successfully updated a report"
   })
-  update(@Param('id') id: string, @Body() updateReportDto: UpdateReportDto) {
-    return this.reportsService.update(+id, updateReportDto);
+  update(@Param('id',ParseIntPipe) id: number, @Body() updateReportDto: UpdateReportDto) {
+    return this.reportsService.update(id, updateReportDto);
   }
 
   @Patch(':userid/deactivate/:id')
@@ -54,7 +54,7 @@ export class ReportsController {
   @ApiOkResponse({
     description: "Successfully deactivated a user account"
   })
-  deactivateUser(@Param('userid') userid:number,@Param('id') id:number,@Body('days') days:number, @Res() response : Response) {
+  deactivateUser(@Param('userid',ParseIntPipe) userid:number,@Param('id',ParseIntPipe) id:number,@Body('days') days:number, @Res() response : Response) {
     return this.reportsService.deactivateUser(userid,days,id,response)
   } 
   @Delete(':id')
@@ -63,7 +63,7 @@ export class ReportsController {
     description: "Successfully deleted a report"
   })
 
-  remove(@Param('id') id: string,@Res() response:Response) {
-    return this.reportsService.remove(+id,response);
+  remove(@Param('id',ParseIntPipe) id: number,@Res() response:Response) {
+    return this.reportsService.remove(id,response);
   }
 }

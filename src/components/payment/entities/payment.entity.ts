@@ -1,5 +1,6 @@
 import { Cart } from "src/components/cart/entities/cart.entity";
 import { PaymentStatus } from "src/components/enums/payment.enum";
+import { Order } from "src/components/orders/entities/order.entity";
 import { Products } from "src/components/products/entities/product.entity";
 import { Users } from "src/components/users/entities/user.entity";
 import { Column, Entity, JoinColumn, ManyToOne, OneToMany, OneToOne, PrimaryGeneratedColumn } from "typeorm";
@@ -50,6 +51,9 @@ export class Payments {
     @OneToOne(()=>Cart,cart=>cart.payment)
     @JoinColumn({name : 'cart'})
     cart : Cart
+
+    @OneToMany(()=>Order,order=>order.payment)
+    order : Order
 
   
 

@@ -1,4 +1,4 @@
-import { Controller, Get, Post, Body, Patch, Param, Delete, Req, UseGuards, Res } from '@nestjs/common';
+import { Controller, Get, Post, Body, Patch, Param, Delete, Req, UseGuards, Res, ParseIntPipe } from '@nestjs/common';
 import { ShopService } from './shop.service';
 import { CreateShopDto } from './dto/create-shop.dto';
 import { UpdateShopDto } from './dto/update-shop.dto';
@@ -40,7 +40,7 @@ export class ShopController {
   @ApiOkResponse({
     description: "Specific shop fetched successfully"
   })
-  findOne(@Param('id') id: number) {
+  findOne(@Param('id',ParseIntPipe) id: number) {
     return this.shopService.findOne(id);
   }
 
@@ -49,8 +49,8 @@ export class ShopController {
   @ApiOkResponse({
     description: "Successfully updated shop details"
   })
-  update(@Param('id') id: string, @Body() updateShopDto: UpdateShopDto, @Res() response: Response) {
-    return this.shopService.update(+id, updateShopDto,response);
+  update(@Param('id',ParseIntPipe) id: number, @Body() updateShopDto: UpdateShopDto, @Res() response: Response) {
+    return this.shopService.update(id, updateShopDto,response);
   }
   
   @Delete(':id')
@@ -58,7 +58,7 @@ export class ShopController {
   @ApiOkResponse({
     description: "Successfully removed a shop "
   })
-  remove(@Param('id') shopid: number,@Req() request: Request,@Res() response:Response) {
+  remove(@Param('id',ParseIntPipe) shopid: number,@Req() request: Request,@Res() response:Response) {
     return this.shopService.remove(shopid,request,response);
   }
 }
