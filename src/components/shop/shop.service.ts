@@ -57,9 +57,11 @@ export class ShopService {
     await this.mailService.sendShopCreatedEmail(ShopOwner.email,ShopOwner.name,createShopDto.name)
     
     res.setHeader('Role',Role.SELLER)
-    res.status(201).json({
-      message:'You have successfully created a shop',
-    });
+    return{
+      shopid :shop.shopid,
+      owner
+    }
+
   }catch(error){
     res.status(500).json({
       message:'Internal server error',
