@@ -1,4 +1,4 @@
-import { Controller, Get, Post, Body, Patch, Param, Delete, Req } from '@nestjs/common';
+import { Controller, Get, Post, Body, Patch, Param, Delete, Req, UseGuards } from '@nestjs/common';
 import { PaymentService } from './payment.service';
 import { CreatePaymentDto } from './dto/create-payment.dto';
 import { UpdatePaymentDto } from './dto/update-payment.dto';
@@ -6,8 +6,10 @@ import { Public } from '../auth/guards/public';
 import { InitialPayoutDto } from './dto/create-initialpayout.dto';
 import { Request } from 'express';
 import { ApiOkResponse, ApiOperation, ApiResponse } from '@nestjs/swagger';
+import { RolesGuard } from '../auth/guards/roles.guard';
+import { Roles } from '../decorators/roles.decorators';
+import { Role } from '../enums/role.enums';
 
-@Public()
 @Controller('payments')
 export class PaymentController {
   constructor(private readonly paymentService: PaymentService) {}
@@ -22,6 +24,8 @@ export class PaymentController {
     return this.paymentService.processPayment(createPaymentDto,req);
   }
 
+  @Roles(Role.ADMIN)
+  @UseGuards(RolesGuard)
   @Post('cash-out')
   @ApiOperation({summary:"Cashes out money to any account specified"})
   @ApiResponse({
@@ -33,6 +37,8 @@ export class PaymentController {
     return this.paymentService.initiatePayout(mobile,amount)
   }
 
+  @Roles(Role.ADMIN)
+  @UseGuards(RolesGuard)
   @Get('status/:tx_ref')
   @ApiOperation({summary:"Gets a paymeny status from paychangu"})
   @ApiOkResponse({
@@ -42,6 +48,8 @@ export class PaymentController {
     return this.paymentService.getPaymentStatus(tx_ref)
   }
 
+  @Roles(Role.ADMIN)
+  @UseGuards(RolesGuard)
   @Get('verify/:tx_ref')
   @ApiOperation({summary:"Verifies a payment"})
   @ApiOkResponse({

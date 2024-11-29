@@ -1,12 +1,14 @@
-import { Controller, Get, Post, Body, Patch, Param, Delete, Res, Req, ParseIntPipe } from '@nestjs/common';
+import { Controller, Get, Post, Body, Patch, Param, Delete, Res, Req, ParseIntPipe, UseGuards } from '@nestjs/common';
 import { ReportsService } from './reports.service';
 import { CreateReportDto } from './dto/create-report.dto';
 import { UpdateReportDto } from './dto/update-report.dto';
 import { Response } from 'express';
 import { Public } from '../auth/guards/public';
 import { ApiOkResponse, ApiOperation, ApiResponse, ApiTags } from '@nestjs/swagger';
+import { Roles } from '../decorators/roles.decorators';
+import { RolesGuard } from '../auth/guards/roles.guard';
+import { Role } from '../enums/role.enums';
 
-@Public()
 @ApiTags('Reports')
 @Controller('reports')
 export class ReportsController {
@@ -40,6 +42,8 @@ export class ReportsController {
     return this.reportsService.findOne(id);
   }
 
+  @Roles(Role.ADMIN)
+  @UseGuards(RolesGuard)
   @Patch(':id')
   @ApiOperation({summary: "Update report details"})
   @ApiOkResponse({
@@ -49,6 +53,8 @@ export class ReportsController {
     return this.reportsService.update(id, updateReportDto);
   }
 
+  @Roles(Role.ADMIN)
+  @UseGuards(RolesGuard)
   @Patch(':userid/deactivate/:id')
   @ApiOperation({summary: "Deactivate a user account by admins only"})
   @ApiOkResponse({
@@ -57,6 +63,7 @@ export class ReportsController {
   deactivateUser(@Param('userid',ParseIntPipe) userid:number,@Param('id',ParseIntPipe) id:number,@Body('days') days:number, @Res() response : Response) {
     return this.reportsService.deactivateUser(userid,days,id,response)
   } 
+
   @Delete(':id')
   @ApiOperation({summary: "deletes a specific report by id"})
   @ApiOkResponse({

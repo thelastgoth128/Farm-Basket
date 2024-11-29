@@ -1,16 +1,20 @@
-import { Controller, Get, Post, Body, Patch, Param, Delete, ParseIntPipe, Query } from '@nestjs/common';
+import { Controller, Get, Post, Body, Patch, Param, Delete, ParseIntPipe, Query, UseGuards } from '@nestjs/common';
 import { ProductsService } from './products.service';
 import { CreateProductDto } from './dto/create-product.dto';
 import { UpdateProductDto } from './dto/update-product.dto';
 import { Public } from '../auth/guards/public';
 import { ApiOkResponse, ApiOperation, ApiResponse } from '@nestjs/swagger';
 import { Products } from './entities/product.entity';
+import { RolesGuard } from '../auth/guards/roles.guard';
+import { Role } from '../enums/role.enums';
+import { Roles } from '../decorators/roles.decorators';
 
-@Public()
 @Controller('products')
 export class ProductsController {
   constructor(private readonly productsService: ProductsService) {}
 
+  @Roles(Role.SELLER)
+  @UseGuards(RolesGuard)
   @Post('create')
   @ApiOperation({summary:"creates a shop and updates a user's role to seller"})
   @ApiResponse({
@@ -58,6 +62,8 @@ export class ProductsController {
     return this.productsService.findShopProduct(shopid)
   }
 
+  @Roles(Role.SELLER)
+  @UseGuards(RolesGuard)
   @Patch(':id')
   @ApiOperation({summary:"Updates products details"})
   @ApiOkResponse({
@@ -67,6 +73,8 @@ export class ProductsController {
     return this.productsService.updateProduct(id, updateProductDto);
   }
 
+  @Roles(Role.SELLER)
+  @UseGuards(RolesGuard)
   @Delete('delete/:id')
   @ApiOperation({summary:"Deletes a product"})
   @ApiOkResponse({

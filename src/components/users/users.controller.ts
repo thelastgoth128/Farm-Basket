@@ -12,13 +12,13 @@ import { AuthGuard } from '../auth/guards/authGuard';
 import { RolesGuard } from '../auth/guards/roles.guard';
 import { ApiOkResponse, ApiOperation, ApiResponse, ApiTags } from '@nestjs/swagger';
 
-@Public()
+
 @ApiTags('users')
 @Controller('users')
 export class UsersController {
   constructor(private readonly usersService: UsersService) {}
 
-  
+  @Public()
   @Post('register')
   @ApiOperation({summary: "register a first time user with a unique email"})
   //@ApiOkResponse // created //bad error
@@ -33,7 +33,8 @@ export class UsersController {
     return await this.usersService.create(createUserDto,response)
   }
 
-
+  @Roles(Role.ADMIN)
+  @UseGuards(RolesGuard)
   @Get('all')
   @ApiOperation({summary: "Fetch a list of users"})
   @ApiOkResponse({
@@ -44,6 +45,7 @@ export class UsersController {
   findAll() {
     return this.usersService.findAll();
   }
+
 
   @Get(':id')
   @ApiOperation({summary: "Fetch a specific user"})
@@ -63,7 +65,8 @@ export class UsersController {
     return this.usersService.update(updateUserDto,userid,request);
   }
 
-
+  @Roles(Role.ADMIN)
+  @UseGuards(RolesGuard)
   @Patch(':userid')
   @ApiOperation({summary: "Update user details"})
   @ApiOkResponse({
@@ -73,6 +76,8 @@ export class UsersController {
     return this.usersService.makeAdmin(userid,UpdateUserDto)
   }
 
+  @Roles(Role.ADMIN)
+  @UseGuards(RolesGuard)
   @Patch('ban/:userid')
   @ApiOperation({summary: "Ban a user's account"})
   @ApiOkResponse({
@@ -82,6 +87,8 @@ export class UsersController {
     return this.usersService.banUser(userid)
   }
 
+  @Roles(Role.ADMIN)
+  @UseGuards(RolesGuard)
   @Patch('activate/:userid')
   @ApiOperation({summary: "Activate a user's account"})
   @ApiOkResponse({
@@ -100,6 +107,8 @@ export class UsersController {
     return this.usersService.remove(request,response);
   }
 
+  @Roles(Role.ADMIN)
+  @UseGuards(RolesGuard)
   @Delete(':userid')
   @ApiOperation({
     summary:"The admin enforces the removal of an account in case that the account is faulty"

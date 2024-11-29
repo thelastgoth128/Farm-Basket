@@ -7,7 +7,6 @@ import { Public } from '../auth/guards/public';
 import { CreateMessagingDto } from './dto/create-messaging.dto';
 import { ApiOkResponse, ApiOperation, ApiResponse, ApiTags } from '@nestjs/swagger';
 
-@Public()
 @ApiTags('Messages')
 @Controller('messages')
 export class MessagingController {

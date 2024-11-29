@@ -1,4 +1,4 @@
-import { Body, Controller, Post, UploadedFile, UseInterceptors } from "@nestjs/common";
+import { Body, Controller, Post, UploadedFile, UseGuards, UseInterceptors } from "@nestjs/common";
 import { CloudinaryService } from "../services.ts/cloudinary.service";
 import { FileInterceptor } from "@nestjs/platform-express";
 import * as path from "path";
@@ -7,8 +7,10 @@ import * as sharp from "sharp";
 import { ImageService } from "./image.service";
 import { Public } from "../auth/guards/public";
 import { ApiOperation, ApiResponse } from "@nestjs/swagger";
+import { RolesGuard } from "../auth/guards/roles.guard";
+import { Roles } from "../decorators/roles.decorators";
+import { Role } from "../enums/role.enums";
 
-@Public()
 @Controller('images')
 export class ImageController{
     constructor(
@@ -16,6 +18,8 @@ export class ImageController{
         private readonly imageService : ImageService
     ){}
 
+    @Roles(Role.SELLER,Role.ADMIN)
+    @UseGuards(RolesGuard)
     @Post('upload')
     @ApiOperation({summary: "Posts a shop image to cloudinary server"})
     @ApiResponse({
@@ -34,6 +38,8 @@ export class ImageController{
       } 
     }
 
+    @Roles(Role.SELLER,Role.ADMIN)
+    @UseGuards(RolesGuard)
     @Post('product/image')
     @ApiOperation({summary: "Posts a product image to cloudinary server"})
   @ApiResponse({

@@ -26,6 +26,8 @@ export class ShopController {
   }
 
   
+  @Roles(Role.ADMIN)
+  @UseGuards(RolesGuard)
   @Get('all')
   @ApiOperation({summary: "Fetch a list of shops"})
   @ApiOkResponse({
@@ -44,6 +46,8 @@ export class ShopController {
     return this.shopService.findOne(id);
   }
 
+  @Roles(Role.SELLER)
+  @UseGuards(RolesGuard)
   @Patch(':id')
   @ApiOperation({summary: "Updates shop details by id entered"})
   @ApiOkResponse({
@@ -53,6 +57,8 @@ export class ShopController {
     return this.shopService.update(id, updateShopDto,response);
   }
   
+  @Roles(Role.SELLER)
+  @UseGuards(RolesGuard)
   @Delete(':id')
   @ApiOperation({summary: "Deletes a specific shop by the given id"})
   @ApiOkResponse({

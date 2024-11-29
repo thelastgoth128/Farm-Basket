@@ -6,7 +6,6 @@ import { Public } from '../auth/guards/public';
 import { Request } from 'express';
 import { ApiOkResponse, ApiOperation, ApiResponse } from '@nestjs/swagger';
 
-@Public()
 @Controller('notifications')
 export class NotificationsController {
   constructor(private readonly notificationsService: NotificationsService) {}
