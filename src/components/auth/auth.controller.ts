@@ -6,7 +6,7 @@ import { ForgotPasswordDto } from "./dto/forgot-password.dto";
 import { UsersService } from "../users/users.service";
 import { ApiOperation, ApiResponse } from "@nestjs/swagger";
 
-
+@Public()
 @Controller('auth')
 export class AuthController {
     constructor(
@@ -14,7 +14,6 @@ export class AuthController {
         private userService : UsersService
      ){}
 
-    @Public()
     @Post('login')
     @ApiOperation({summary: "logins a user"})
     @ApiResponse({
@@ -25,7 +24,6 @@ export class AuthController {
         return this.authService.signIn(signInDto.email,signInDto.password,response)
     }
 
-    @Public()
     @Post('forgot-password')
     @ApiOperation({summary: "sends an email to user where they can reset there password"})
     @ApiResponse({
