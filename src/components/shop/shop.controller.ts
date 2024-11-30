@@ -8,6 +8,7 @@ import { Roles } from '../decorators/roles.decorators';
 import { Role } from '../enums/role.enums';
 import { Public } from '../auth/guards/public';
 import { ApiOkResponse, ApiOperation, ApiResponse, ApiTags } from '@nestjs/swagger';
+import { AuthGuard } from '../auth/guards/authGuard';
 
 @Public()
 @ApiTags('Shop')
@@ -15,19 +16,20 @@ import { ApiOkResponse, ApiOperation, ApiResponse, ApiTags } from '@nestjs/swagg
 export class ShopController {
   constructor(private readonly shopService: ShopService) {}
 
+
   @Post('create')
   @ApiOperation({summary:"creates a shop and updates a user's role to seller"})
   @ApiResponse({
     status: 200,
     description: "succesfully created a Shop"
   })
+  @UseGuards(AuthGuard)
   create(@Body() createShopDto: CreateShopDto,@Req() request: Request,@Res() response:Response) {
     return this.shopService.create(createShopDto,request,response);
   }
 
   
-  @Roles(Role.ADMIN)
-  @UseGuards(RolesGuard)
+  
   @Get('all')
   @ApiOperation({summary: "Fetch a list of shops"})
   @ApiOkResponse({
@@ -57,7 +59,7 @@ export class ShopController {
     return this.shopService.update(id, updateShopDto,response);
   }
   
-  @Roles(Role.SELLER)
+  @Roles(Role.SELLER,Role.ADMIN)
   @UseGuards(RolesGuard)
   @Delete(':id')
   @ApiOperation({summary: "Deletes a specific shop by the given id"})

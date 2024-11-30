@@ -13,14 +13,14 @@ import { Roles } from '../decorators/roles.decorators';
 export class ProductsController {
   constructor(private readonly productsService: ProductsService) {}
 
-  @Roles(Role.SELLER)
-  @UseGuards(RolesGuard)
   @Post('create')
   @ApiOperation({summary:"creates a shop and updates a user's role to seller"})
   @ApiResponse({
     status: 200,
     description: "succesfully posted a product"
   })
+  @Roles(Role.SELLER,Role.ADMIN)
+  @UseGuards(RolesGuard)
   createProduct(@Body() createProductDto: CreateProductDto) {
     return this.productsService.createProduct(createProductDto);
   }
@@ -30,16 +30,19 @@ export class ProductsController {
   @ApiOkResponse({
     description: "Successfully fetched all products"
   })
+  @Public()
   findAllProducts() {
     return this.productsService.findAllProducts();
   }
 
   @Get('search')
+  @Public()
   async searchByTYpe(@Query('type') type:string ): Promise<Products[]>{
     return await this.productsService.findByType(type)
   }
 
   @Get('name')
+  @Public()
   async searchByName(@Query('name') name : string ): Promise<Products[]> {
     return await this.productsService.findByName(name)
   }
@@ -49,6 +52,7 @@ export class ProductsController {
   @ApiOkResponse({
     description: "Successfully fetched a product  by id"
   })
+  @Public()
   findProductById(@Param('id',ParseIntPipe) id: number) {
     return this.productsService.findProductById(id);
   }
@@ -62,24 +66,26 @@ export class ProductsController {
     return this.productsService.findShopProduct(shopid)
   }
 
-  @Roles(Role.SELLER)
-  @UseGuards(RolesGuard)
+
   @Patch(':id')
   @ApiOperation({summary:"Updates products details"})
   @ApiOkResponse({
     description: "Successfully updated product's details"
   })
+  @Roles(Role.SELLER,Role.ADMIN)
+  @UseGuards(RolesGuard)
   updateProduct(@Param('id',ParseIntPipe) id: number, @Body() updateProductDto: UpdateProductDto) {
     return this.productsService.updateProduct(id, updateProductDto);
   }
 
-  @Roles(Role.SELLER)
-  @UseGuards(RolesGuard)
+
   @Delete('delete/:id')
   @ApiOperation({summary:"Deletes a product"})
   @ApiOkResponse({
     description: "Successfully deleted a product"
   })
+  @Roles(Role.SELLER,Role.ADMIN)
+  @UseGuards(RolesGuard)
   removeProduct(@Param('id',ParseIntPipe) id: number) {
     return this.productsService.removeProduct(id);
   }

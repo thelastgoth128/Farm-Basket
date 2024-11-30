@@ -5,7 +5,6 @@ import { UpdateCartItemDto } from './dto/update-cart-item.dto';
 import { Request } from 'express';
 import { Public } from '../auth/guards/public';
 
-@Public()
 @Controller('cart')
 export class CartController {
   constructor(private readonly cartService: CartService) {}

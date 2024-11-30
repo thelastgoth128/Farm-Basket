@@ -64,7 +64,10 @@ export class ShopService {
 
     res.setHeader('Role',Role.SELLER)
     return res.status(201).json({
-      shopid :shop.shopid,
+      shopid:shop.shopid,
+      name: shop.name,
+      description: shop.description,
+      image: shop.image,
       owner : ownerReponse
     })
 
