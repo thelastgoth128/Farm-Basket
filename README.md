@@ -33,7 +33,7 @@ $ npm install
 ```
 
 ## Compile and run the project
-
+npm run start
 ```bash
 # development
 $ npm run start
