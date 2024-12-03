@@ -12,6 +12,6 @@ export class Inbox {
     @OneToMany(()=> InboxParticipants, participant=>participant.inbox)
     participants : InboxParticipants[]
 
-    @OneToMany(()=>Messages, message => message.inboxid)
+    @OneToMany(()=>Messages, message => message.inbox)
     messages : Messages[]
 }

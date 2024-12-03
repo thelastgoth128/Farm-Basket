@@ -14,7 +14,7 @@ export class Messages {
 
     @ManyToOne(()=>Inbox,inbox=> inbox.messages)
     @JoinColumn({name : 'inboxid'})
-    inboxid : Inbox
+    inbox : Inbox
 
     @Column()
     messages : string
