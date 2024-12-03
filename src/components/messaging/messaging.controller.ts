@@ -7,6 +7,7 @@ import { Public } from '../auth/guards/public';
 import { CreateMessagingDto } from './dto/create-messaging.dto';
 import { ApiOkResponse, ApiOperation, ApiResponse, ApiTags } from '@nestjs/swagger';
 
+
 @ApiTags('Messages')
 @Controller('messages')
 export class MessagingController {
@@ -30,6 +31,15 @@ export class MessagingController {
   })
   async getInboxName(@Param('id',ParseIntPipe) inboxId: number, @Query('userId') userId: number): Promise<string> {
     return await this.messagingService.getInboxName(inboxId, userId);
+  }
+
+  @Get(":inbox/message")
+  @ApiOperation({summary: "Get messages in an inbox by inbox id"})
+  @ApiOkResponse({
+    description: "Successfully fetched messages in an inbox"
+  })
+  async getInboxMsgs(@Param('inbox', ParseIntPipe) inbox: number) {
+    return await this.messagingService.getInboxMsgs(inbox)
   }
 
   @Get(':id')

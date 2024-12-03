@@ -38,7 +38,7 @@ export class MessagingService {
   
       const message = new Messages();
       message.userid = user
-      message.inboxid = inbox;
+      message.inbox = inbox;
       message.messages = messages;
       message.created_at = new Date();
   
@@ -86,8 +86,20 @@ export class MessagingService {
     return otherParticipants.map(participant => participant.userid.name).join(', ');
   }
 
+  async getInboxMsgs (inboxId : number ) {
+    const inbox = await this.inboxRep.findOne({where : {inboxid : inboxId }})
+
+    if ( !inbox) {
+      throw new NotFoundException("Inbox not found")
+    }
+
+    const messages = await this.messarep.find({where : {inbox}})
+
+    return messages
+  }
+
   async findOne(id: number) {
-    return await this.findOne(id)
+    return await this.messarep.findOne({where : {id}})
   }
 
   async update(id: number, updateMessagingDto: UpdateMessagingDto) {
